@@ -6,9 +6,9 @@ from graph import Graph
 
 def timer(func):
     def wrapper_timer(*args, **kwargs):
-        tic = time.process_time_ns()
+        tic = time.process_time()
         value = func(*args, **kwargs)
-        toc = time.process_time_ns()
+        toc = time.process_time()
         return value, toc - tic
 
     return wrapper_timer
@@ -79,4 +79,4 @@ if __name__ == "__main__":
     g = Graph.from_file("sample.col")
     col = Coloring(g)
     t = col.branch_and_bound()[-1]
-    col.to_file("sol.col", f"Elapsed time: {t} ns")
+    col.to_file("sol.col", f"Branch and Bound in {t:0.6f} seconds")
