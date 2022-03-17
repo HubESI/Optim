@@ -66,9 +66,11 @@ class Coloring:
                     bound = eval
                     self.solution = (eval, child_node.state)
 
-    def to_file(self, file_path="sol.col", *args):
+    def to_file(self, file_path="sol.col", *args, **kwargs):
         with open(file_path, "w") as f:
             for c in args:
+                f.write(f"c {c}\n")
+            for _, c in kwargs.items():
                 f.write(f"c {c}\n")
             f.write(f"s col {self.solution[0]}\n")
             for vi in range(len(self.solution[1])):
@@ -79,4 +81,4 @@ if __name__ == "__main__":
     g = Graph.from_file("sample.col")
     col = Coloring(g)
     t = col.branch_and_bound()[-1]
-    col.to_file("sol.col", f"Branch and Bound in {t:0.6f} seconds")
+    col.to_file(time_info=f"Branch and Bound in {t:0.6f} seconds")
