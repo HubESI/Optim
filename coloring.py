@@ -76,7 +76,7 @@ class Coloring:
 
 
 if __name__ == "__main__":
-    g = Graph.from_file("fpsol2.i.2.col")
+    g = Graph.from_file("sample.col")
     col = Coloring(g)
     t = col.branch_and_bound()[-1]
     col.to_file("sol.col", f"Elapsed time: {t} ns")
