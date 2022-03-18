@@ -44,7 +44,7 @@ class Coloring:
 
             @classmethod
             def child_node(cls, node, color, eval):
-                new_state = list(node.state)
+                new_state = node.state.copy()
                 new_state[node.current_vertex - 1] = color
                 return cls(vertices_nexts[node.current_vertex - 1], eval, new_state)
 
