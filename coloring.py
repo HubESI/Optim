@@ -24,7 +24,7 @@ class Coloring:
         adj_mat = self.g.adj_mat
         n = len(adj_mat)
         bound = self.solution[0]
-        vertices_nexts = [vi + 2 for vi in range(n - 1)] + [None]
+        vertices_nexts = [v + 1 for v in range(1, n)] + [None]
 
         def colors_info(current_vertex, state):
             possible_colors = set(range(1, bound + 1))
@@ -54,17 +54,16 @@ class Coloring:
             node = active_nodes.pop()
             if node.eval >= bound:
                 continue
+            if node.current_vertex is None:
+                bound = node.eval
+                self.solution = (bound, node.state)
+                continue
             possible_colors, used_colors = colors_info(node.current_vertex, node.state)
             for color in sorted(possible_colors, reverse=True):
                 eval = node.eval if color in used_colors else node.eval + 1
                 if eval >= bound:
                     continue
-                child_node = Node.child_node(node, color, eval)
-                if child_node.current_vertex:
-                    active_nodes.append(child_node)
-                else:
-                    bound = eval
-                    self.solution = (eval, child_node.state)
+                active_nodes.append(Node.child_node(node, color, eval))
 
     def greedy_coloring(self):
         n = len(self.g.adj_mat)
