@@ -23,7 +23,7 @@ class Coloring:
     def branch_and_bound(self):
         adj_mat = self.g.adj_mat
         n = len(adj_mat)
-        bound = n
+        bound = self.solution[0]
         vertices_nexts = [vi + 2 for vi in range(n - 1)] + [None]
 
         def colors_info(current_vertex, state):
@@ -66,6 +66,31 @@ class Coloring:
                     bound = eval
                     self.solution = (eval, child_node.state)
 
+    def greedy_coloring(self):
+        n = len(self.g.adj_mat)
+        solution = [-1] * n
+        # Assign the first color to first vertex
+        solution[0] = 1
+        # A temporary array to store the available colors.
+        # False value of available[c] would mean that the
+        # color c is assigned to one of its adjacent vertices
+        available_colors = [True] * n
+        # Assign colors to remaining n-1 vertices
+        for u in range(1, n):
+            # Process all adjacent vertices and
+            # flag their colors as unavailable
+            for i in range(n):
+                if self.g.adj_mat[u][i] and solution[i] != -1:
+                    available_colors[solution[i] - 1] = False
+            # Find the first available color
+            c = available_colors.index(True) + 1
+            # Assign the found color
+            solution[u] = c
+            # Reset the values back to false
+            # for the next iteration
+            available_colors = [True] * n
+        self.solution = len(set(solution)), solution
+
     def to_file(self, file_path="sol.col", *args, **kwargs):
         with open(file_path, "w") as f:
             for c in args:
@@ -78,7 +103,8 @@ class Coloring:
 
 
 if __name__ == "__main__":
-    g = Graph.from_file("sample.col")
+    g = Graph.from_file("queen5_5.col")
     col = Coloring(g)
+    col.greedy_coloring()
     t = col.branch_and_bound()[-1]
     col.to_file(time_info=f"Branch and Bound in {t:0.6f} seconds")
