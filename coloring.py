@@ -71,7 +71,7 @@ class Coloring:
                 active_nodes.append(Node.child_node(node, color, eval))
 
     @timer
-    def min_color_heuristic(self):
+    def heuristic_wrapper(self, node_cost_calculator):
         adj_mat = self.g.adj_mat
         n = len(adj_mat)
         vertices_nexts = [v + 1 for v in range(1, n)] + [None]
@@ -94,7 +94,7 @@ class Coloring:
             def child_node(cls, node, color):
                 new_state = node.state.copy()
                 new_state[node.current_vertex - 1] = color
-                cost = color / node.current_vertex
+                cost = node_cost_calculator(node, color)
                 return cls(vertices_nexts[node.current_vertex - 1], new_state, cost)
 
             def __eq__(self, other):
@@ -113,6 +113,10 @@ class Coloring:
             colors = available_colors(node.current_vertex, node.state)
             for color in colors:
                 active_nodes.put(Node.child_node(node, color))
+
+    @staticmethod
+    def min_color_cost(node, color):
+        return color / node.current_vertex
 
     def greedy_coloring(self):
         n = len(self.g.adj_mat)
@@ -161,7 +165,7 @@ if __name__ == "__main__":
         output_file = f"{input_file}.min_color_heuristic.sol"
     g = Graph.from_file(input_file)
     col = Coloring(g)
-    t = col.min_color_heuristic()[-1]
+    t = col.heuristic_wrapper(Coloring.min_color_cost)[-1]
     col.to_file(
         output_file,
         graph_info=f"Coloring the graph defined in '{input_file}'",
