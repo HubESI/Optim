@@ -1,6 +1,8 @@
 import time
 from collections import deque
 import sys
+from queue import PriorityQueue
+from functools import total_ordering
 
 from graph import Graph
 
@@ -68,6 +70,58 @@ class Coloring:
                     continue
                 active_nodes.append(Node.child_node(node, color, eval))
 
+    @timer
+    def min_color_heuristic(self):
+        adj_mat = self.g.adj_mat
+        n = len(adj_mat)
+        vertices_nexts = [v + 1 for v in range(1, n)] + [None]
+
+        def available_colors(current_vertex, state):
+            colors = set(range(1, n + 1))
+            for vi in range(n):
+                if state[vi] and adj_mat[current_vertex - 1][vi]:
+                    colors.discard(state[vi])
+            return colors
+
+        @total_ordering
+        class Node:
+            def __init__(self, current_vertex, state):
+                self.current_vertex = current_vertex
+                self.state = state
+
+            @classmethod
+            def child_node(cls, node, color):
+                new_state = node.state.copy()
+                new_state[node.current_vertex - 1] = color
+                return cls(vertices_nexts[node.current_vertex - 1], new_state)
+
+            @property
+            def last_color(self):
+                if self.current_vertex:
+                    return (
+                        self.state[self.current_vertex - 2]
+                        if self.current_vertex >= 2
+                        else 0
+                    )
+                return self.state[-1]
+
+            def __eq__(self, other):
+                return self.last_color == other.last_color
+
+            def __lt__(self, other):
+                return self.last_color < other.last_color
+
+        active_nodes = PriorityQueue()
+        active_nodes.put(Node(1, [None] * n))
+        while active_nodes:
+            node = active_nodes.get()
+            if node.current_vertex is None:
+                self.solution = (len(set(node.state)), node.state)
+                break
+            colors = available_colors(node.current_vertex, node.state)
+            for color in colors:
+                active_nodes.put(Node.child_node(node, color))
+
     def greedy_coloring(self):
         n = len(self.g.adj_mat)
         solution = [-1] * n
@@ -112,13 +166,12 @@ if __name__ == "__main__":
     try:
         output_file = sys.argv[2]
     except IndexError:
-        output_file = f"{input_file}.branch_and_bound.sol"
+        output_file = f"{input_file}.min_color_heuristic.sol"
     g = Graph.from_file(input_file)
     col = Coloring(g)
-    col.greedy_coloring()
-    t = col.branch_and_bound()[-1]
+    t = col.min_color_heuristic()[-1]
     col.to_file(
         output_file,
         graph_info=f"Coloring the graph defined in '{input_file}'",
-        method_time_info=f"Branch and Bound in {t:0.6f} seconds",
+        method_time_info=f"Minimal color heuristic in {t:0.6f} seconds",
     )
