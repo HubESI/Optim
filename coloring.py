@@ -1,5 +1,6 @@
 import time
 from collections import deque
+import sys
 
 from graph import Graph
 
@@ -92,7 +93,7 @@ class Coloring:
             available_colors = [True] * n
         self.solution = len(set(solution)), solution
 
-    def to_file(self, file_path="sol.col", *args, **kwargs):
+    def to_file(self, file_path, *args, **kwargs):
         with open(file_path, "w") as f:
             for c in args:
                 f.write(f"c {c}\n")
@@ -104,8 +105,20 @@ class Coloring:
 
 
 if __name__ == "__main__":
-    g = Graph.from_file("queen5_5.col")
+    try:
+        input_file = sys.argv[1]
+    except IndexError:
+        raise SystemExit(f"Usage: {sys.argv[0]} <input_file> [<output_file>]")
+    try:
+        output_file = sys.argv[2]
+    except IndexError:
+        output_file = f"{input_file}.branch_and_bound.sol"
+    g = Graph.from_file(input_file)
     col = Coloring(g)
     col.greedy_coloring()
     t = col.branch_and_bound()[-1]
-    col.to_file(time_info=f"Branch and Bound in {t:0.6f} seconds")
+    col.to_file(
+        output_file,
+        graph_info=f"Coloring the graph defined in '{input_file}'",
+        method_time_info=f"Branch and Bound in {t:0.6f} seconds",
+    )
