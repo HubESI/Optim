@@ -1,4 +1,5 @@
-c Branch and Bound in 0.003128 seconds
+c Coloring the graph defined in 'instances/queen5_5.col'
+c Branch and Bound in 0.003503 seconds
 s col 5
 l 1 1
 l 2 2
