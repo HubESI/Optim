@@ -1,16 +1,19 @@
+from typing import List
+
+
 class Graph:
-    def __init__(self, adj_mat):
+    def __init__(self, adj_mat: List[List[bool]]) -> None:
         self.adj_mat = adj_mat
 
     @property
-    def order(self):
+    def order(self) -> int:
         return len(self.adj_mat)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.order
 
     @classmethod
-    def from_file(cls, file_path):
+    def from_file(cls, file_path: str) -> "Graph":
         with open(file_path) as f:
             line = f.readline()
             while line[0] != "p":

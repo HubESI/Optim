@@ -13,7 +13,7 @@ except IndexError:
     output_file = f"{input_file}.min_color_heuristic.sol"
 g = Graph.from_file(input_file)
 col = Heuristic(g, Heuristic.min_color_cost)
-t = col.solve()[-1]
+t = col.solve()[1]
 col.to_file(
     output_file,
     graph_info=f"Coloring the graph defined in '{input_file}'",
