@@ -1,9 +1,12 @@
 import time
 from abc import abstractmethod
+from typing import Any, Callable, List, Tuple
+
+from graph import Graph
 
 
-def timer(func):
-    def wrapper_timer(*args, **kwargs):
+def timer(func: Callable) -> Callable[..., Tuple[Any, float]]:
+    def wrapper_timer(*args, **kwargs) -> Tuple[Any, float]:
         tic = time.process_time()
         value = func(*args, **kwargs)
         toc = time.process_time()
@@ -13,23 +16,23 @@ def timer(func):
 
 
 class Coloring:
-    def __init__(self, g):
+    def __init__(self, g: Graph):
         self.g = g
         self.solution = None, [None] * len(g.adj_mat)
 
     @property
-    def adj_mat(self):
+    def adj_mat(self) -> List[List[bool]]:
         return self.g.adj_mat
 
     @property
-    def order(self):
+    def order(self) -> int:
         return self.g.order
 
     @abstractmethod
-    def solve():
+    def solve() -> None:
         pass
 
-    def to_file(self, file_path, *args, **kwargs):
+    def to_file(self, file_path: str, *args, **kwargs) -> None:
         with open(file_path, "w") as f:
             for c in args:
                 f.write(f"c {c}\n")

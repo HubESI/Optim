@@ -1,25 +1,36 @@
 from collections import deque
+from typing import List, Set, Tuple
 
-from coloring import Coloring, timer
+from coloring import Coloring, Graph, timer
 
 
 class BranchAndBound(Coloring):
-    def __init__(self, g):
+    def __init__(self, g: Graph) -> None:
         super().__init__(g)
         self.greedy_coloring()
 
-    def create_node(self, current_vertex, state, eval):
+    def create_node(
+        self, current_vertex: int, state: List[int], eval: int
+    ) -> "BranchAndBound.Node":
         return self.Node(self, current_vertex, state, eval)
 
     class Node:
-        def __init__(self, outer, current_vertex, state, eval):
+        def __init__(
+            self,
+            outer: "BranchAndBound",
+            current_vertex: int,
+            state: List[int],
+            eval: int,
+        ) -> None:
             self.outer = outer
             self.current_vertex = current_vertex
             self.state = state
             self.eval = eval
 
         @classmethod
-        def child_node(cls, node, color, eval):
+        def child_node(
+            cls, node: "BranchAndBound.Node", color: int, eval: int
+        ) -> "BranchAndBound.Node":
             current_vertex = (
                 node.current_vertex + 1
                 if node.current_vertex < node.outer.order
@@ -30,10 +41,12 @@ class BranchAndBound(Coloring):
             return cls(node.outer, current_vertex, state, eval)
 
     @timer
-    def solve(self):
+    def solve(self) -> None:
         bound = self.solution[0]
 
-        def colors_info(current_vertex, state):
+        def colors_info(
+            current_vertex: int, state: List[int]
+        ) -> Tuple[Set[int], Set[int]]:
             used_colors = set(state)
             used_colors.remove(None)
             possible_colors = used_colors.copy()
@@ -62,7 +75,7 @@ class BranchAndBound(Coloring):
                     continue
                 active_nodes.append(self.Node.child_node(node, color, eval))
 
-    def greedy_coloring(self):
+    def greedy_coloring(self) -> None:
         solution = [-1] * self.order
         # Assign the first color to first vertex
         solution[0] = 1
