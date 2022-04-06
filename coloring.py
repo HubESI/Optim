@@ -85,34 +85,26 @@ class Coloring:
 
         @total_ordering
         class Node:
-            def __init__(self, current_vertex, state):
+            def __init__(self, current_vertex, state, cost):
                 self.current_vertex = current_vertex
                 self.state = state
+                self.cost = cost
 
             @classmethod
             def child_node(cls, node, color):
                 new_state = node.state.copy()
                 new_state[node.current_vertex - 1] = color
-                return cls(vertices_nexts[node.current_vertex - 1], new_state)
-
-            @property
-            def last_color(self):
-                if self.current_vertex:
-                    return (
-                        self.state[self.current_vertex - 2]
-                        if self.current_vertex >= 2
-                        else 0
-                    )
-                return self.state[-1]
+                cost = color / node.current_vertex
+                return cls(vertices_nexts[node.current_vertex - 1], new_state, cost)
 
             def __eq__(self, other):
-                return self.last_color == other.last_color
+                return self.cost == other.cost
 
             def __lt__(self, other):
-                return self.last_color < other.last_color
+                return self.cost < other.cost
 
         active_nodes = PriorityQueue()
-        active_nodes.put(Node(1, [None] * n))
+        active_nodes.put(Node(1, [None] * n, 0))
         while active_nodes:
             node = active_nodes.get()
             if node.current_vertex is None:
