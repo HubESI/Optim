@@ -27,13 +27,15 @@ class Coloring:
         vertices_nexts = [v + 1 for v in range(1, n)] + [None]
 
         def colors_info(current_vertex, state):
-            possible_colors = set(range(1, bound + 1))
-            used_colors = set()
+            used_colors = set(state)
+            used_colors.remove(None)
+            possible_colors = used_colors.copy()
+            unused_colors = set(range(1, n + 1)).difference(used_colors)
+            for _ in range(bound - len(used_colors)):
+                possible_colors.add(unused_colors.pop())
             for vi in range(n):
-                if state[vi]:
-                    used_colors.add(state[vi])
-                    if adj_mat[current_vertex - 1][vi]:
-                        possible_colors.discard(state[vi])
+                if state[vi] and adj_mat[current_vertex - 1][vi]:
+                    possible_colors.discard(state[vi])
             return possible_colors, used_colors
 
         class Node:
