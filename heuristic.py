@@ -68,3 +68,9 @@ class Heuristic(Coloring):
     @staticmethod
     def min_color_cost(node: "Heuristic.Node", color: int) -> float:
         return color / node.current_vertex
+
+    @staticmethod
+    def min_nb_colors_cost(node: "Heuristic.Node", color: int) -> float:
+        used_colors = set(node.state)
+        # used_colors.remove(None)
+        return len(used_colors) / node.current_vertex
