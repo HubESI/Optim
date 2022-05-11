@@ -1,3 +1,5 @@
+from multiprocessing.sharedctypes import Value
+import sys
 from functools import total_ordering
 from queue import PriorityQueue
 from typing import Callable, List, Set
@@ -74,3 +76,39 @@ class Heuristic(Coloring):
         used_colors = set(node.state)
         # used_colors.remove(None)
         return len(used_colors) / node.current_vertex
+
+
+if __name__ == "__main__":
+    try:
+        cost_function_selector = int(sys.argv[1])
+        input_file = sys.argv[2]
+        cost_functions = [
+            {
+                "func": Heuristic.min_color_cost,
+                "name": "Minimal color",
+                "output_file": "min_color",
+            },
+            {
+                "func": Heuristic.min_nb_colors_cost,
+                "name": "Minimal number of colors",
+                "output_file": "min_nb_colors",
+            },
+        ]
+        cost_function = cost_functions[cost_function_selector % len(cost_functions)]
+    except (IndexError, ValueError):
+        raise SystemExit(
+            f"Usage: {sys.argv[0]} <cost_function_selector:int> <input_file> [<output_file>]"
+        )
+    try:
+        output_file = sys.argv[3]
+    except IndexError:
+        output_file = f"{input_file}.{cost_function['output_file']}_heuristic.sol"
+    g = Graph.from_file(input_file)
+
+    col = Heuristic(g, cost_function["func"])
+    t = col.solve()[1]
+    col.to_file(
+        output_file,
+        graph_info=f"Coloring the graph defined in '{input_file}'",
+        method_time_info=f"{cost_function['name']} heuristic in {t:0.6f} seconds",
+    )

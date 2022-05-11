@@ -1,3 +1,4 @@
+import sys
 from collections import deque
 from typing import List, Set, Tuple
 
@@ -98,3 +99,22 @@ class BranchAndBound(Coloring):
             # for the next iteration
             available_colors = [True] * self.g.order
         self.solution = len(set(solution)), solution
+
+
+if __name__ == "__main__":
+    try:
+        input_file = sys.argv[1]
+    except IndexError:
+        raise SystemExit(f"Usage: {sys.argv[0]} <input_file> [<output_file>]")
+    try:
+        output_file = sys.argv[2]
+    except IndexError:
+        output_file = f"{input_file}.branch_and_bound.sol"
+    g = Graph.from_file(input_file)
+    col = BranchAndBound(g)
+    t = col.solve()[1]
+    col.to_file(
+        output_file,
+        graph_info=f"Coloring the graph defined in '{input_file}'",
+        method_time_info=f"Branch and Bound in {t:0.6f} seconds",
+    )
