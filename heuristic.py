@@ -31,7 +31,7 @@ class Heuristic(Coloring):
         def child_node(cls, node: "Heuristic.Node", color: int) -> "Heuristic.Node":
             current_vertex = (
                 node.current_vertex + 1
-                if node.current_vertex < node.outer.order
+                if node.current_vertex < node.outer.g.order
                 else None
             )
             state = node.state.copy()
@@ -48,14 +48,14 @@ class Heuristic(Coloring):
     @timer
     def solve(self) -> None:
         def available_colors(current_vertex: int, state: List[int]) -> Set[int]:
-            colors = set(range(1, self.order + 1))
-            for vi in range(self.order):
+            colors = set(range(1, self.g.order + 1))
+            for vi in range(self.g.order):
                 if state[vi] and self.adj_mat[current_vertex - 1][vi]:
                     colors.discard(state[vi])
             return colors
 
         active_nodes = PriorityQueue()
-        active_nodes.put(self.create_node(1, [None] * self.order, 0))
+        active_nodes.put(self.create_node(1, [None] * self.g.order, 0))
         while active_nodes:
             node = active_nodes.get()
             if node.current_vertex is None:

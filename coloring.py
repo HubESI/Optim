@@ -24,10 +24,6 @@ class Coloring:
     def adj_mat(self) -> List[List[bool]]:
         return self.g.adj_mat
 
-    @property
-    def order(self) -> int:
-        return self.g.order
-
     @abstractmethod
     def solve() -> None:
         pass

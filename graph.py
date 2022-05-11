@@ -9,9 +9,6 @@ class Graph:
     def order(self) -> int:
         return len(self.adj_mat)
 
-    def __len__(self) -> int:
-        return self.order
-
     @classmethod
     def from_file(cls, file_path: str) -> "Graph":
         with open(file_path) as f:
