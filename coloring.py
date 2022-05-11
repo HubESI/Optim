@@ -18,18 +18,14 @@ def timer(func: Callable) -> Callable[..., Tuple[Any, float]]:
 class Coloring:
     def __init__(self, g: Graph):
         self.g = g
-        self.solution = None, [None] * len(g.adj_mat)
+        self.solution = None, [None] * g.order
 
     @property
     def adj_mat(self) -> List[List[bool]]:
         return self.g.adj_mat
 
-    @property
-    def order(self) -> int:
-        return self.g.order
-
     @abstractmethod
-    def solve() -> None:
+    def solve(self) -> None:
         pass
 
     def to_file(self, file_path: str, *args, **kwargs) -> None:

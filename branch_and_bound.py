@@ -1,3 +1,4 @@
+import sys
 from collections import deque
 from typing import List, Set, Tuple
 
@@ -33,7 +34,7 @@ class BranchAndBound(Coloring):
         ) -> "BranchAndBound.Node":
             current_vertex = (
                 node.current_vertex + 1
-                if node.current_vertex < node.outer.order
+                if node.current_vertex < node.outer.g.order
                 else None
             )
             state = node.state.copy()
@@ -50,16 +51,16 @@ class BranchAndBound(Coloring):
             used_colors = set(state)
             used_colors.remove(None)
             possible_colors = used_colors.copy()
-            unused_colors = set(range(1, self.order + 1)).difference(used_colors)
+            unused_colors = set(range(1, self.g.order + 1)).difference(used_colors)
             for _ in range(bound - len(used_colors)):
                 possible_colors.add(unused_colors.pop())
-            for vi in range(self.order):
+            for vi in range(self.g.order):
                 if state[vi] and self.adj_mat[current_vertex - 1][vi]:
                     possible_colors.discard(state[vi])
             return possible_colors, used_colors
 
         active_nodes = deque()
-        active_nodes.append(self.create_node(1, [None] * self.order, 0))
+        active_nodes.append(self.create_node(1, [None] * self.g.order, 0))
         while active_nodes:
             node = active_nodes.pop()
             if node.eval >= bound:
@@ -76,18 +77,18 @@ class BranchAndBound(Coloring):
                 active_nodes.append(self.Node.child_node(node, color, eval))
 
     def greedy_coloring(self) -> None:
-        solution = [-1] * self.order
+        solution = [-1] * self.g.order
         # Assign the first color to first vertex
         solution[0] = 1
         # A temporary array to store the available colors.
         # False value of available[c] would mean that the
         # color c is assigned to one of its adjacent vertices
-        available_colors = [True] * self.order
+        available_colors = [True] * self.g.order
         # Assign colors to remaining n-1 vertices
-        for u in range(1, self.order):
+        for u in range(1, self.g.order):
             # Process all adjacent vertices and
             # flag their colors as unavailable
-            for i in range(self.order):
+            for i in range(self.g.order):
                 if self.adj_mat[u][i] and solution[i] != -1:
                     available_colors[solution[i] - 1] = False
             # Find the first available color
@@ -96,5 +97,24 @@ class BranchAndBound(Coloring):
             solution[u] = c
             # Reset the values back to false
             # for the next iteration
-            available_colors = [True] * self.order
+            available_colors = [True] * self.g.order
         self.solution = len(set(solution)), solution
+
+
+if __name__ == "__main__":
+    try:
+        input_file = sys.argv[1]
+    except IndexError:
+        raise SystemExit(f"Usage: {sys.argv[0]} <input_file> [<output_file>]")
+    try:
+        output_file = sys.argv[2]
+    except IndexError:
+        output_file = f"{input_file}.branch_and_bound.sol"
+    g = Graph.from_file(input_file)
+    col = BranchAndBound(g)
+    t = col.solve()[1]
+    col.to_file(
+        output_file,
+        graph_info=f"Coloring the graph defined in '{input_file}'",
+        method_time_info=f"Branch and Bound in {t:0.6f} seconds",
+    )
