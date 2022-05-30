@@ -1,28 +1,28 @@
 c Coloring the graph defined in 'instances/myciel4.col'
-c Genetic Algorithm in 0.000295 seconds and after 0 generation
-c population_size=50, crossover_rate=1, mutation_rate=0.7, max_iter=20000
-c best result after 28405 execution
-s col 10
-l 1 22
-l 2 2
-l 3 14
-l 4 13
-l 5 22
-l 6 17
-l 7 1
-l 8 17
-l 9 13
+c Genetic Algorithm in 7.444679 seconds and after 1000 generations
+c confilct_penalty=10, population_size=100
+c crossover_rate=0.8, mutation_rate=0.1
+s col 5
+l 1 23
+l 2 13
+l 3 18
+l 4 4
+l 5 13
+l 6 23
+l 7 7
+l 8 4
+l 9 7
 l 10 7
-l 11 4
-l 12 18
-l 13 1
-l 14 17
-l 15 14
-l 16 4
-l 17 19
-l 18 18
-l 19 13
-l 20 1
-l 21 19
-l 22 4
-l 23 7
+l 11 13
+l 12 23
+l 13 7
+l 14 23
+l 15 4
+l 16 23
+l 17 7
+l 18 7
+l 19 23
+l 20 4
+l 21 7
+l 22 18
+l 23 13
