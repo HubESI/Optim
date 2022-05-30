@@ -2,12 +2,6 @@ from functools import total_ordering
 from random import choice, randint
 
 
-class SolutionFound(Exception):
-    def __init__(self, solution, *args):
-        super().__init__(args)
-        self.solution = solution
-
-
 @total_ordering
 class Individual:
     def __init__(self, ga):
@@ -24,15 +18,14 @@ class Individual:
         return individ
 
     def calc_fitness(self):
-        tmp = 0
+        nb_conflicts = 0
         for vi in range(self.ga.g.order):
             for adji in range(self.ga.g.order):
                 if self.genes[vi] == self.genes[adji] and self.ga.adj_mat[vi][adji]:
-                    tmp += 1
-        try:
-            self.fitness = 1 / tmp
-        except ZeroDivisionError as e:
-            raise SolutionFound(self, *e.args)
+                    nb_conflicts += 1
+        self.fitness = 1 / (
+            self.ga.confilct_penalty * nb_conflicts + len(set(self.genes))
+        )
 
     @staticmethod
     def crossover(p1, p2):
