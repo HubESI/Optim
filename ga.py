@@ -15,7 +15,7 @@ class GA(Coloring):
         population_size=100,
         crossover_rate=0.8,
         mutation_rate=0.1,
-        max_generations=1000,
+        max_generations=500,
     ):
         super().__init__(g)
         self.solution = self.g.order, list(range(1, self.g.order + 1))
@@ -37,11 +37,9 @@ class GA(Coloring):
         gen_count = 0
         gen = Population.create_rand(self)
         while gen_count < self.max_generations:
-            gen.rank_individuals()
-            gen.setup_weights()
             new_gen = Population(self)
             while len(new_gen) < len(gen):
-                p1, p2 = gen.roulette_selection()
+                p1, p2 = gen.tournament_selection()
                 o1, o2 = (
                     Individual.uniform_crossover(p1, p2)
                     if self.crossover_probe()
@@ -75,6 +73,7 @@ if __name__ == "__main__":
         output_file,
         graph_info=f"Coloring the graph defined in '{input_file}'",
         time_info=f"Genetic Algorithm in {t:0.6f} seconds and after {gen_count} generations",
+        operators="tournament_selection, uniform_crossover",
         hyperparameters1=f"confilct_penalty={col.confilct_penalty}, population_size={col.population_size}",
         hyperparameters2=f"crossover_rate={col.crossover_rate}, mutation_rate={col.mutation_rate}",
     )
