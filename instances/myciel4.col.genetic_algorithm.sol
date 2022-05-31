@@ -1,0 +1,29 @@
+c Coloring the graph defined in 'instances/myciel4.col'
+c Genetic Algorithm in 3.174030 seconds and after 500 generations
+c tournament_selection, uniform_crossover
+c confilct_penalty=10, population_size=100
+c crossover_rate=0.8, mutation_rate=0.1
+s col 5
+l 1 10
+l 2 4
+l 3 18
+l 4 23
+l 5 10
+l 6 10
+l 7 23
+l 8 22
+l 9 18
+l 10 22
+l 11 4
+l 12 22
+l 13 23
+l 14 18
+l 15 4
+l 16 4
+l 17 22
+l 18 23
+l 19 23
+l 20 22
+l 21 22
+l 22 4
+l 23 10
