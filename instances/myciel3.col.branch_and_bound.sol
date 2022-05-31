@@ -1,5 +1,5 @@
 c Coloring the graph defined in 'instances/myciel3.col'
-c Branch and Bound in 0.012647 seconds
+c Branch and Bound in 0.000390 seconds
 s col 4
 l 1 1
 l 2 2
