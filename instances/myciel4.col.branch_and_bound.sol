@@ -1,5 +1,5 @@
-c Coloring the graph defined in '../Optim-binp/instances/myciel4.col'
-c Branch and Bound in 214.385527 seconds
+c Coloring the graph defined in 'instances/myciel4.col'
+c Branch and Bound in 1.323124 seconds
 s col 5
 l 1 1
 l 2 2

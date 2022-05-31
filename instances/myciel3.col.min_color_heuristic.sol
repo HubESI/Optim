@@ -1,5 +1,5 @@
 c Coloring the graph defined in 'instances/myciel3.col'
-c Minimal color heuristic in 0.000755 seconds
+c Minimal color heuristic in 0.000235 seconds
 s col 4
 l 1 1
 l 2 2

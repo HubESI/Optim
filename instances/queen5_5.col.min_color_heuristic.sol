@@ -1,5 +1,5 @@
 c Coloring the graph defined in 'instances/queen5_5.col'
-c Minimal color heuristic in 0.003163 seconds
+c Minimal color heuristic in 0.000674 seconds
 s col 7
 l 1 1
 l 2 2

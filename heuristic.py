@@ -15,31 +15,34 @@ class Heuristic(Coloring):
         self.cost_calculator = node_cost_calculator
 
     def create_node(
-        self, current_vertex: int, state: List[int], cost: float
+        self, vertex: int, state: List[int], newest_color: int, cost: float
     ) -> "Heuristic.Node":
-        return self.Node(self, current_vertex, state, cost)
+        return self.Node(self, vertex, state, newest_color, cost)
 
     @total_ordering
     class Node:
         def __init__(
-            self, outer: "Heuristic", current_vertex: int, state: List[int], cost: float
+            self,
+            outer: "Heuristic",
+            vertex: int,
+            state: List[int],
+            newest_color: int,
+            cost: float,
         ) -> None:
             self.outer = outer
-            self.current_vertex = current_vertex
+            self.vertex = vertex
             self.state = state
+            self.newest_color = newest_color
             self.cost = cost
 
         @classmethod
-        def child_node(cls, node: "Heuristic.Node", color: int) -> "Heuristic.Node":
-            current_vertex = (
-                node.current_vertex + 1
-                if node.current_vertex < node.outer.g.order
-                else None
-            )
-            state = node.state.copy()
-            state[node.current_vertex - 1] = color
-            cost = node.outer.cost_calculator(node, color)
-            return cls(node.outer, current_vertex, state, cost)
+        def child_node(cls, parent: "Heuristic.Node", color: int) -> "Heuristic.Node":
+            vertex = parent.vertex + 1 if parent.vertex < parent.outer.g.order else None
+            state = parent.state.copy()
+            state[parent.vertex - 1] = color
+            newest_color = max(parent.newest_color, color)
+            cost = parent.outer.cost_calculator(parent, color)
+            return cls(parent.outer, vertex, state, newest_color, cost)
 
         def __eq__(self, other: "Heuristic.Node") -> bool:
             return self.cost == other.cost
@@ -49,34 +52,36 @@ class Heuristic(Coloring):
 
     @timer
     def solve(self) -> None:
-        def available_colors(current_vertex: int, state: List[int]) -> Set[int]:
-            colors = set(range(1, self.g.order + 1))
+        def possible_used_colors(current_vertex: int, state: List[int]) -> Set[int]:
+            used_colors = set(state)
+            used_colors.remove(None)
             for vi in range(self.g.order):
                 if state[vi] and self.adj_mat[current_vertex - 1][vi]:
-                    colors.discard(state[vi])
-            return colors
+                    used_colors.discard(state[vi])
+            return used_colors
 
         active_nodes = PriorityQueue()
-        active_nodes.put(self.create_node(1, [None] * self.g.order, 0))
+        active_nodes.put(self.create_node(1, [None] * self.g.order, 0, 0))
         while active_nodes:
             node = active_nodes.get()
-            if node.current_vertex is None:
+            if node.vertex is None:
                 self.solution = (len(set(node.state)), node.state)
                 break
-            colors = available_colors(node.current_vertex, node.state)
-            for color in colors:
+            possible_colors = possible_used_colors(node.vertex, node.state)
+            possible_colors.add(node.newest_color + 1)
+            for color in possible_colors:
                 active_nodes.put(self.Node.child_node(node, color))
 
     @staticmethod
     def min_color_cost(node: "Heuristic.Node", color: int) -> float:
-        return color / node.current_vertex
+        return color / node.vertex
 
     @staticmethod
     def min_nb_colors_cost(node: "Heuristic.Node", color: int) -> float:
         used_colors = set(node.state)
         used_colors.remove(None)
         used_colors.add(color)
-        return len(used_colors) / node.current_vertex
+        return len(used_colors) / node.vertex
 
 
 if __name__ == "__main__":
