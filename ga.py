@@ -18,8 +18,8 @@ class GA(Coloring):
         max_generations: int = 100,
     ):
         super().__init__(g)
-        self.solution = self.g.order, list(range(1, self.g.order + 1))
-        self.bound = bound or self.g.order
+        self.greedy_coloring()
+        self.bound = bound or self.solution[0]
         self.confilct_penalty = confilct_penalty
         self.population_size = population_size
         self.crossover_rate = crossover_rate

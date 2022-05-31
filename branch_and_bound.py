@@ -70,30 +70,6 @@ class BranchAndBound(Coloring):
                     self.Node.child_node(node, node.newest_color + 1, node.eval + 1)
                 )
 
-    def greedy_coloring(self) -> None:
-        solution = [-1] * self.g.order
-        # Assign the first color to first vertex
-        solution[0] = 1
-        # A temporary array to store the available colors.
-        # False value of available[c] would mean that the
-        # color c is assigned to one of its adjacent vertices
-        available_colors = [True] * self.g.order
-        # Assign colors to remaining n-1 vertices
-        for u in range(1, self.g.order):
-            # Process all adjacent vertices and
-            # flag their colors as unavailable
-            for i in range(self.g.order):
-                if self.adj_mat[u][i] and solution[i] != -1:
-                    available_colors[solution[i] - 1] = False
-            # Find the first available color
-            c = available_colors.index(True) + 1
-            # Assign the found color
-            solution[u] = c
-            # Reset the values back to false
-            # for the next iteration
-            available_colors = [True] * self.g.order
-        self.solution = len(set(solution)), solution
-
 
 if __name__ == "__main__":
     try:
