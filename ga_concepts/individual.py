@@ -7,7 +7,7 @@ from typing import Tuple
 class Individual:
     def __init__(self, ga):
         self.ga = ga
-        self.genes = [None] * ga.bound
+        self.genes = [None] * ga.g.order
         self.nb_conflicts = None
         self.nb_colors = None
         self.fitness = None
