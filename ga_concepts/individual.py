@@ -5,7 +5,7 @@ from typing import Tuple
 
 @total_ordering
 class Individual:
-    def __init__(self, ga):
+    def __init__(self, ga) -> None:
         self.ga = ga
         self.genes = [None] * ga.g.order
         self.nb_conflicts = None
@@ -14,11 +14,11 @@ class Individual:
 
     @staticmethod
     def create_rand(ga) -> "Individual":
-        individ = Individual(ga)
+        ind = Individual(ga)
         for gi in range(ga.g.order):
-            individ.genes[gi] = randint(1, ga.bound)
-        individ.calc_fitness()
-        return individ
+            ind.genes[gi] = randint(1, ga.bound)
+        ind.calc_fitness()
+        return ind
 
     def calc_fitness(self) -> None:
         self.nb_conflicts = 0
