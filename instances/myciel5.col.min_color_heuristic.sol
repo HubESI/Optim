@@ -1,5 +1,5 @@
 c Coloring the graph defined in 'instances/myciel5.col'
-c Minimal color heuristic in 4.902671 seconds
+c Minimal color heuristic in 0.811840 seconds
 s col 6
 l 1 1
 l 2 2
@@ -17,7 +17,7 @@ l 13 2
 l 14 1
 l 15 2
 l 16 3
-l 17 3
+l 17 1
 l 18 2
 l 19 1
 l 20 2
@@ -25,11 +25,11 @@ l 21 3
 l 22 4
 l 23 5
 l 24 3
-l 25 2
+l 25 3
 l 26 1
 l 27 2
 l 28 3
-l 29 1
+l 29 3
 l 30 3
 l 31 1
 l 32 2
@@ -38,9 +38,9 @@ l 34 4
 l 35 4
 l 36 4
 l 37 1
-l 38 4
+l 38 2
 l 39 3
-l 40 3
+l 40 1
 l 41 2
 l 42 1
 l 43 2
