@@ -1,10 +1,13 @@
 from functools import total_ordering
-from random import randint, getrandbits
+from random import getrandbits, randint
+from typing import Tuple
+
+from ..ga import GA
 
 
 @total_ordering
 class Individual:
-    def __init__(self, ga):
+    def __init__(self, ga: GA):
         self.ga = ga
         self.genes = [None] * ga.bound
         self.nb_conflicts = None
@@ -12,14 +15,14 @@ class Individual:
         self.fitness = None
 
     @staticmethod
-    def create_rand(ga):
+    def create_rand(ga: GA) -> "Individual":
         individ = Individual(ga)
         for gi in range(ga.g.order):
             individ.genes[gi] = randint(1, ga.bound)
         individ.calc_fitness()
         return individ
 
-    def calc_fitness(self):
+    def calc_fitness(self) -> None:
         self.nb_conflicts = 0
         used_colors = set()
         for vi in range(self.ga.g.order):
@@ -35,7 +38,9 @@ class Individual:
             self.ga.solution = self.nb_colors, self.genes
 
     @staticmethod
-    def one_point_crossover(p1, p2):
+    def one_point_crossover(
+        p1: "Individual", p2: "Individual"
+    ) -> Tuple["Individual", "Individual"]:
         assert p1.ga == p2.ga
         ga = p1.ga
         o1, o2 = Individual(ga), Individual(ga)
@@ -47,7 +52,9 @@ class Individual:
         return o1, o2
 
     @staticmethod
-    def uniform_crossover(p1, p2):
+    def uniform_crossover(
+        p1: "Individual", p2: "Individual"
+    ) -> Tuple["Individual", "Individual"]:
         assert p1.ga == p2.ga
         ga = p1.ga
         o1, o2 = Individual(ga), Individual(ga)
@@ -62,15 +69,15 @@ class Individual:
         o2.calc_fitness()
         return o1, o2
 
-    def mutate(self):
+    def mutate(self) -> None:
         self.genes[randint(0, self.ga.g.order - 1)] = randint(1, self.ga.bound)
         self.calc_fitness()
 
-    def __eq__(self, __o):
+    def __eq__(self, __o: object) -> bool:
         return self.fitness == __o.fitness
 
-    def __lt__(self, __o):
+    def __lt__(self, __o: object) -> bool:
         return self.fitness < __o.fitness
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.genes} fitness: {self.fitness}"

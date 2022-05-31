@@ -9,13 +9,13 @@ from ga_concepts.population import Population
 class GA(Coloring):
     def __init__(
         self,
-        g,
-        bound=None,
-        confilct_penalty=10,
-        population_size=100,
-        crossover_rate=0.8,
-        mutation_rate=0.1,
-        max_generations=500,
+        g: Graph,
+        bound: int = None,
+        confilct_penalty: int = 10,
+        population_size: int = 100,
+        crossover_rate: float = 0.8,
+        mutation_rate: float = 0.1,
+        max_generations: int = 500,
     ):
         super().__init__(g)
         self.solution = self.g.order, list(range(1, self.g.order + 1))
