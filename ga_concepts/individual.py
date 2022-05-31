@@ -2,12 +2,10 @@ from functools import total_ordering
 from random import getrandbits, randint
 from typing import Tuple
 
-from ..ga import GA
-
 
 @total_ordering
 class Individual:
-    def __init__(self, ga: GA):
+    def __init__(self, ga):
         self.ga = ga
         self.genes = [None] * ga.bound
         self.nb_conflicts = None
@@ -15,7 +13,7 @@ class Individual:
         self.fitness = None
 
     @staticmethod
-    def create_rand(ga: GA) -> "Individual":
+    def create_rand(ga) -> "Individual":
         individ = Individual(ga)
         for gi in range(ga.g.order):
             individ.genes[gi] = randint(1, ga.bound)

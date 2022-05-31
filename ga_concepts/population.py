@@ -2,12 +2,11 @@ from collections import deque
 from random import choice, choices
 from typing import Iterable, List, Tuple
 
-from ..ga import GA
 from .individual import Individual
 
 
 class Population:
-    def __init__(self, ga: GA) -> None:
+    def __init__(self, ga) -> None:
         self.ga = ga
         self.individuals = deque(maxlen=ga.population_size)
         self.weights = None
@@ -15,7 +14,7 @@ class Population:
         self.total_fitness = 0
 
     @staticmethod
-    def create_rand(ga: GA) -> "Population":
+    def create_rand(ga) -> "Population":
         rand_pop = Population(ga)
         for _ in range(ga.population_size):
             rand_pop.insert(Individual.create_rand(ga))
