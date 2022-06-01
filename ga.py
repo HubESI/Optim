@@ -74,7 +74,5 @@ if __name__ == "__main__":
         output_file,
         graph_info=f"Coloring the graph defined in '{input_file}'",
         time_info=f"Genetic Algorithm in {t:0.6f} seconds and after {gen_count} generations",
-        operators="tournament_selection, uniform_crossover",
-        hyperparameters1=f"confilct_penalty={col.confilct_penalty}, population_size={col.population_size}",
-        hyperparameters2=f"crossover_rate={col.crossover_rate}, mutation_rate={col.mutation_rate}",
+        hyperparameters=f"population_size={col.population_size}, crossover_rate={col.crossover_rate}, mutation_rate={col.mutation_rate}",
     )
