@@ -33,7 +33,7 @@ class Individual:
         used_colors = set()
         for vi in range(self.ga.g.order):
             used_colors.add(self.genes[vi])
-            for adji in range(self.ga.g.order):
+            for adji in range(vi + 1, self.ga.g.order):
                 if self.genes[vi] == self.genes[adji] and self.ga.adj_mat[vi][adji]:
                     self.nb_conflicts += 1
         self.nb_colors = len(used_colors)
