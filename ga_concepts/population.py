@@ -13,9 +13,9 @@ class Population:
         self.elite = None
         self.total_fitness = 0
 
-    @staticmethod
-    def create_rand(ga) -> "Population":
-        rand_pop = Population(ga)
+    @classmethod
+    def create_rand(cls, ga) -> "Population":
+        rand_pop = cls(ga)
         for _ in range(ga.population_size):
             rand_pop.insert(Individual.create_rand(ga))
         return rand_pop

@@ -12,9 +12,9 @@ class Individual:
         self.nb_colors = None
         self.fitness = None
 
-    @staticmethod
-    def create_rand(ga) -> "Individual":
-        ind = Individual(ga)
+    @classmethod
+    def create_rand(cls, ga) -> "Individual":
+        ind = cls(ga)
         for gi in range(ga.g.order):
             ind.genes[gi] = randint(1, ga.bound)
         ind.calc_fitness()
@@ -42,13 +42,13 @@ class Individual:
         if self.nb_conflicts == 0 and self.nb_colors < self.ga.solution[0]:
             self.ga.solution = self.nb_colors, self.genes
 
-    @staticmethod
+    @classmethod
     def one_point_crossover(
-        p1: "Individual", p2: "Individual"
+        cls, p1: "Individual", p2: "Individual"
     ) -> Tuple["Individual", "Individual"]:
         assert p1.ga == p2.ga
         ga = p1.ga
-        o1, o2 = Individual(ga), Individual(ga)
+        o1, o2 = cls(ga), cls(ga)
         cp = randint(0, ga.g.order - 1)
         o1.genes = p1.genes[: cp + 1] + p2.genes[cp + 1 :]
         o2.genes = p2.genes[: cp + 1] + p1.genes[cp + 1 :]
@@ -56,13 +56,13 @@ class Individual:
         o2.calc_fitness()
         return o1, o2
 
-    @staticmethod
+    @classmethod
     def uniform_crossover(
-        p1: "Individual", p2: "Individual"
+        cls, p1: "Individual", p2: "Individual"
     ) -> Tuple["Individual", "Individual"]:
         assert p1.ga == p2.ga
         ga = p1.ga
-        o1, o2 = Individual(ga), Individual(ga)
+        o1, o2 = cls(ga), cls(ga)
         for i in range(ga.g.order):
             if getrandbits(1):
                 o1.genes[i] = p1.genes[i]
