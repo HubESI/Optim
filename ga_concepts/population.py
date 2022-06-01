@@ -39,6 +39,9 @@ class Population:
         for ind in cl:
             self.insert(ind)
 
+    def insert_solution(self):
+        self.insert(Individual.create(self.ga, self.ga.solution[1]))
+
     def setup_weights(self) -> None:
         self.weights = [ind.fitness / self.total_fitness for ind in self.individuals]
 

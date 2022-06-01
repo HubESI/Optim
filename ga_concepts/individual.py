@@ -1,6 +1,6 @@
 from functools import total_ordering
 from random import getrandbits, randint
-from typing import Tuple
+from typing import List, Tuple
 
 
 @total_ordering
@@ -17,6 +17,13 @@ class Individual:
         ind = Individual(ga)
         for gi in range(ga.g.order):
             ind.genes[gi] = randint(1, ga.bound)
+        ind.calc_fitness()
+        return ind
+
+    @classmethod
+    def create(cls, ga, genes: List[int]) -> "Individual":
+        ind = cls(ga)
+        ind.genes = genes
         ind.calc_fitness()
         return ind
 

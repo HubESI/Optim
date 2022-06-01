@@ -5,13 +5,13 @@ from coloring import Coloring, Graph, timer
 from ga_concepts.individual import Individual
 from ga_concepts.population import Population
 
+CONFLICT_PENALTY = 10
+
 
 class GA(Coloring):
     def __init__(
         self,
         g: Graph,
-        bound: int = None,
-        confilct_penalty: int = 10,
         population_size: int = 100,
         crossover_rate: float = 0.8,
         mutation_rate: float = 0.1,
@@ -19,8 +19,8 @@ class GA(Coloring):
     ):
         super().__init__(g)
         self.greedy_coloring()
-        self.bound = bound or self.solution[0]
-        self.confilct_penalty = confilct_penalty
+        self.bound = self.solution[0]
+        self.confilct_penalty = CONFLICT_PENALTY
         self.population_size = population_size
         self.crossover_rate = crossover_rate
         self.mutation_rate = mutation_rate
@@ -36,6 +36,7 @@ class GA(Coloring):
     def solve(self):
         gen_count = 0
         gen = Population.create_rand(self)
+        gen.insert_solution()
         while gen_count < self.max_generations:
             new_gen = Population(self)
             while len(new_gen) < len(gen):
