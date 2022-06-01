@@ -13,9 +13,9 @@ class Population:
         self.elite = None
         self.total_fitness = 0
 
-    @staticmethod
-    def create_rand(ga) -> "Population":
-        rand_pop = Population(ga)
+    @classmethod
+    def create_rand(cls, ga) -> "Population":
+        rand_pop = cls(ga)
         for _ in range(ga.population_size):
             rand_pop.insert(Individual.create_rand(ga))
         return rand_pop
@@ -38,6 +38,9 @@ class Population:
     def insert_many(self, cl: Iterable[Individual]) -> None:
         for ind in cl:
             self.insert(ind)
+
+    def insert_solution(self):
+        self.insert(Individual.create(self.ga, self.ga.solution[1]))
 
     def setup_weights(self) -> None:
         self.weights = [ind.fitness / self.total_fitness for ind in self.individuals]
