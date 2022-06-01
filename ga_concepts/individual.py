@@ -1,3 +1,4 @@
+from copy import copy
 from functools import total_ordering
 from random import getrandbits, randint
 from typing import List, Tuple
@@ -77,6 +78,14 @@ class Individual:
     def mutate(self) -> None:
         self.genes[randint(0, self.ga.g.order - 1)] = randint(1, self.ga.bound)
         self.calc_fitness()
+
+    def clone(self) -> "Individual":
+        clone_ind = Individual(self.ga)
+        clone_ind.genes = copy(self.genes)
+        clone_ind.nb_conflicts = self.nb_conflicts
+        clone_ind.nb_colors = self.nb_colors
+        clone_ind.fitness = self.fitness
+        return clone_ind
 
     def __eq__(self, __o: object) -> bool:
         return self.fitness == __o.fitness

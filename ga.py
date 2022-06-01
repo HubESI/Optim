@@ -13,6 +13,7 @@ class GA(Coloring):
         self,
         g: Graph,
         population_size: int = 100,
+        rand_proportion: float = 0.7,
         crossover_rate: float = 0.8,
         mutation_rate: float = 0.1,
         max_generations: int = 100,
@@ -22,6 +23,7 @@ class GA(Coloring):
         self.bound = self.solution[0]
         self.confilct_penalty = CONFLICT_PENALTY
         self.population_size = population_size
+        self.rand_proportion = rand_proportion
         self.crossover_rate = crossover_rate
         self.mutation_rate = mutation_rate
         self.max_generations = max_generations
@@ -35,8 +37,10 @@ class GA(Coloring):
     @timer
     def solve(self):
         gen_count = 0
-        gen = Population.create_rand(self)
-        gen.insert_solution()
+        gen = Population.create_hybrid(self)
+        avgs_nb_conflicts = [gen.total_nb_conflicts / self.population_size]
+        avgs_nb_colors = [gen.total_nb_colors / self.population_size]
+        avgs_fitness = [gen.total_fitness / self.population_size]
         while gen_count < self.max_generations:
             new_gen = Population(self)
             while len(new_gen) < len(gen):
@@ -53,8 +57,11 @@ class GA(Coloring):
                 new_gen.insert(o1)
                 new_gen.insert(o2)
             gen = new_gen
+            avgs_nb_conflicts.append(gen.total_nb_conflicts / self.population_size)
+            avgs_nb_colors.append(gen.total_nb_colors / self.population_size)
+            avgs_fitness.append(gen.total_fitness / self.population_size)
             gen_count += 1
-        return gen_count, gen
+        return avgs_nb_conflicts, avgs_nb_colors, avgs_fitness
 
 
 if __name__ == "__main__":
@@ -68,11 +75,10 @@ if __name__ == "__main__":
         output_file = f"{input_file}.genetic_algorithm.sol"
     g = Graph.from_file(input_file)
     col = GA(g)
-    gen_info, t = col.solve()
-    gen_count, gen = gen_info
+    gens_info, t = col.solve()
     col.to_file(
         output_file,
         graph_info=f"Coloring the graph defined in '{input_file}'",
-        time_info=f"Genetic Algorithm in {t:0.6f} seconds and after {gen_count} generations",
+        time_info=f"Genetic Algorithm in {t:0.6f} seconds and after {col.max_generations} generations",
         hyperparameters=f"population_size={col.population_size}, crossover_rate={col.crossover_rate}, mutation_rate={col.mutation_rate}",
     )
