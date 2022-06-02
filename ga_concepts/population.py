@@ -38,11 +38,11 @@ class Population:
         for _ in range(rand_size):
             hybrid_pop.insert(Individual.create_rand(ga))
         elite_ind = Individual.create(ga, ga.solution[1])
-        hybrid_pop.insert(elite_ind)
+        ind = elite_ind
         for _ in range(ga.population_size - rand_size - 1):
+            hybrid_pop.insert(ind)
             ind = elite_ind.clone()
             ind.mutate()
-            hybrid_pop.insert(ind)
         return hybrid_pop
 
     @staticmethod
