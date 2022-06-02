@@ -41,7 +41,7 @@ class Individual:
             self.ga.confilct_penalty * self.nb_conflicts + self.nb_colors
         )
         if self.nb_conflicts == 0 and self.nb_colors < self.ga.solution[0]:
-            self.ga.solution = self.nb_colors, self.genes
+            self.ga.solution = self.nb_colors, copy(self.genes)
 
     @classmethod
     def one_point_crossover(
