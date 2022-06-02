@@ -38,8 +38,10 @@ class GA(Coloring):
     def solve(self):
         gen_count = 0
         gen = Population.create_hybrid(self)
+        gen.rank_individuals()
         avgs_nb_conflicts = [gen.total_nb_conflicts / self.population_size]
         avgs_nb_colors = [gen.total_nb_colors / self.population_size]
+        nb_solutions = [len(gen.valid_solutions)]
         avgs_fitness = [gen.total_fitness / self.population_size]
         while gen_count < self.max_generations:
             new_gen = Population(self)
@@ -57,11 +59,13 @@ class GA(Coloring):
                 new_gen.insert(o1)
                 new_gen.insert(o2)
             gen = new_gen
+            gen.rank_individuals()
             avgs_nb_conflicts.append(gen.total_nb_conflicts / self.population_size)
             avgs_nb_colors.append(gen.total_nb_colors / self.population_size)
+            nb_solutions.append(len(gen.valid_solutions))
             avgs_fitness.append(gen.total_fitness / self.population_size)
             gen_count += 1
-        return avgs_nb_conflicts, avgs_nb_colors, avgs_fitness
+        return avgs_nb_conflicts, avgs_nb_colors, nb_solutions, avgs_fitness
 
 
 if __name__ == "__main__":

@@ -15,6 +15,15 @@ class Population:
         self.total_nb_colors = 0
         self.total_fitness = 0
 
+    @property
+    def valid_solutions(self):
+        solutions = []
+        for ind in self.elite:
+            if ind.nb_conflicts > 0:
+                break
+            solutions.append(ind)
+        return solutions
+
     @classmethod
     def create_rand(cls, ga) -> "Population":
         rand_pop = cls(ga)
