@@ -41,7 +41,7 @@ class Population:
         ind = elite_ind
         for _ in range(ga.population_size - rand_size - 1):
             hybrid_pop.insert(ind)
-            ind = elite_ind.clone()
+            ind = ind.clone()
             ind.mutate()
         return hybrid_pop
 
