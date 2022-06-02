@@ -56,9 +56,10 @@ class Population:
 
     def insert(self, individual: Individual) -> None:
         if len(self) == self.individuals.maxlen and len(self):
-            self.total_nb_conflicts -= self.individuals.popleft().nb_conflicts
-            self.total_nb_colors -= self.individuals.popleft().nb_colors
-            self.total_fitness -= self.individuals.popleft().fitness
+            discarded_ind = self.individuals.popleft()
+            self.total_nb_conflicts -= discarded_ind.nb_conflicts
+            self.total_nb_colors -= discarded_ind.nb_colors
+            self.total_fitness -= discarded_ind.fitness
         self.individuals.append(individual)
         self.total_nb_conflicts += individual.nb_conflicts
         self.total_nb_colors += individual.nb_colors
