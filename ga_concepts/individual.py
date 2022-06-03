@@ -1,3 +1,4 @@
+from copy import copy
 from functools import total_ordering
 from random import getrandbits, randint
 from typing import List, Tuple
@@ -32,7 +33,7 @@ class Individual:
         used_colors = set()
         for vi in range(self.ga.g.order):
             used_colors.add(self.genes[vi])
-            for adji in range(self.ga.g.order):
+            for adji in range(vi + 1, self.ga.g.order):
                 if self.genes[vi] == self.genes[adji] and self.ga.adj_mat[vi][adji]:
                     self.nb_conflicts += 1
         self.nb_colors = len(used_colors)
@@ -40,7 +41,7 @@ class Individual:
             self.ga.confilct_penalty * self.nb_conflicts + self.nb_colors
         )
         if self.nb_conflicts == 0 and self.nb_colors < self.ga.solution[0]:
-            self.ga.solution = self.nb_colors, self.genes
+            self.ga.solution = self.nb_colors, copy(self.genes)
 
     @classmethod
     def one_point_crossover(
@@ -77,6 +78,14 @@ class Individual:
     def mutate(self) -> None:
         self.genes[randint(0, self.ga.g.order - 1)] = randint(1, self.ga.bound)
         self.calc_fitness()
+
+    def clone(self) -> "Individual":
+        clone_ind = Individual(self.ga)
+        clone_ind.genes = copy(self.genes)
+        clone_ind.nb_conflicts = self.nb_conflicts
+        clone_ind.nb_colors = self.nb_colors
+        clone_ind.fitness = self.fitness
+        return clone_ind
 
     def __eq__(self, __o: object) -> bool:
         return self.fitness == __o.fitness
