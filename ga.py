@@ -12,11 +12,11 @@ class GA(Coloring):
     def __init__(
         self,
         g: Graph,
-        population_size: int = 100,
-        rand_proportion: float = 0.7,
-        crossover_rate: float = 0.8,
-        mutation_rate: float = 0.1,
-        max_generations: int = 100,
+        population_size: int = 80,
+        rand_proportion: float = 0.85,
+        crossover_rate: float = 0.9,
+        mutation_rate: float = 0.01,
+        max_generations: int = 35,
     ):
         super().__init__(g)
         self.greedy_coloring()
