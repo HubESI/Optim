@@ -1,7 +1,7 @@
 c Coloring the graph defined in 'instances/queen9_9.col'
-c Genetic Algorithm in 5.709542 seconds and after 100 generations
-c population_size=100, crossover_rate=0.8, mutation_rate=0.1
-s col 16
+c Genetic Algorithm in 3.088435 seconds and after 100 generations
+c population_size=80, crossover_rate=0.9, mutation_rate=0.01
+s col 15
 l 1 1
 l 2 2
 l 3 3
@@ -12,7 +12,7 @@ l 7 7
 l 8 8
 l 9 9
 l 10 3
-l 11 4
+l 11 9
 l 12 1
 l 13 2
 l 14 7
@@ -22,39 +22,39 @@ l 17 6
 l 18 10
 l 19 2
 l 20 5
-l 21 6
+l 21 12
 l 22 3
 l 23 1
 l 24 9
-l 25 4
+l 25 11
 l 26 7
 l 27 8
-l 28 6
-l 29 1
+l 28 8
+l 29 10
 l 30 2
 l 31 5
-l 32 4
+l 32 12
 l 33 7
 l 34 3
 l 35 9
 l 36 11
 l 37 4
-l 38 8
-l 39 9
+l 38 11
+l 39 16
 l 40 1
 l 41 2
 l 42 5
 l 43 6
 l 44 10
 l 45 3
-l 46 12
+l 46 5
 l 47 3
 l 48 7
 l 49 8
 l 50 6
 l 51 10
-l 52 9
-l 53 4
+l 52 14
+l 53 13
 l 54 1
 l 55 10
 l 56 6
@@ -80,6 +80,6 @@ l 75 11
 l 76 12
 l 77 9
 l 78 2
-l 79 15
+l 79 1
 l 80 16
 l 81 7

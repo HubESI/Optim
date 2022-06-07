@@ -1,6 +1,6 @@
 c Coloring the graph defined in 'instances/queen7_7.col'
-c Genetic Algorithm in 2.490085 seconds and after 100 generations
-c population_size=100, crossover_rate=0.7, mutation_rate=0.2
+c Genetic Algorithm in 1.004328 seconds and after 100 generations
+c population_size=80, crossover_rate=0.9, mutation_rate=0.01
 s col 10
 l 1 1
 l 2 2

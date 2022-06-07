@@ -16,7 +16,7 @@ class GA(Coloring):
         rand_proportion: float = 0.85,
         crossover_rate: float = 0.9,
         mutation_rate: float = 0.01,
-        max_generations: int = 35,
+        max_generations: int = 60,
     ):
         super().__init__(g)
         self.greedy_coloring()
