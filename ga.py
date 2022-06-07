@@ -61,7 +61,7 @@ class GA(Coloring):
                 stag_count = self.stagnation_metric
             gen = new_gen
             gen_count += 1
-        return gen_count
+        return gen_count, gen
 
 
 if __name__ == "__main__":
@@ -75,10 +75,12 @@ if __name__ == "__main__":
         output_file = f"{input_file}.genetic_algorithm.sol"
     g = Graph.from_file(input_file)
     col = GA(g)
-    gen_count, t = col.solve()
+    info, t = col.solve()
+    gen_count, last_gen = info
     col.to_file(
         output_file,
         graph_info=f"Coloring the graph defined in '{input_file}'",
         time_info=f"Genetic Algorithm in {t:0.6f} seconds and after {gen_count} generations",
+        last_gen=f"Obtained Last generation average fitness={last_gen.total_fitness/col.population_size}",
         hyperparameters=f"population_size={col.population_size}, crossover_rate={col.crossover_rate}, mutation_rate={col.mutation_rate}",
     )

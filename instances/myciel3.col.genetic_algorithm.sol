@@ -1,5 +1,6 @@
 c Coloring the graph defined in 'instances/myciel3.col'
-c Genetic Algorithm in 0.059389 seconds and after 45 generations
+c Genetic Algorithm in 0.035933 seconds and after 25 generations
+c Obtained Last generation average fitness=0.24516369047619047
 c population_size=80, crossover_rate=0.9, mutation_rate=0.01
 s col 4
 l 1 1

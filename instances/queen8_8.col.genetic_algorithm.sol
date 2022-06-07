@@ -1,5 +1,6 @@
 c Coloring the graph defined in 'instances/queen8_8.col'
-c Genetic Algorithm in 1.277058 seconds and after 81 generations
+c Genetic Algorithm in 2.768491 seconds and after 164 generations
+c Obtained Last generation average fitness=0.04291785107884853
 c population_size=80, crossover_rate=0.9, mutation_rate=0.01
 s col 13
 l 1 1
