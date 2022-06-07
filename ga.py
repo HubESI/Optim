@@ -1,3 +1,4 @@
+from operator import ge
 import random
 import sys
 
@@ -16,7 +17,7 @@ class GA(Coloring):
         rand_proportion: float = 0.85,
         crossover_rate: float = 0.9,
         mutation_rate: float = 0.01,
-        max_generations: int = 60,
+        stagnation_metric: int = 5,
     ):
         super().__init__(g)
         self.greedy_coloring()
@@ -26,7 +27,7 @@ class GA(Coloring):
         self.rand_proportion = rand_proportion
         self.crossover_rate = crossover_rate
         self.mutation_rate = mutation_rate
-        self.max_generations = max_generations
+        self.stagnation_metric = stagnation_metric
 
     def crossover_probe(self):
         return random.random() < self.crossover_rate
@@ -37,8 +38,9 @@ class GA(Coloring):
     @timer
     def solve(self):
         gen_count = 0
+        stag_count = self.stagnation_metric
         gen = Population.create_hybrid(self)
-        while gen_count < self.max_generations:
+        while stag_count:
             new_gen = Population(self)
             while len(new_gen) < len(gen):
                 p1, p2 = gen.tournament_selection()
@@ -53,8 +55,13 @@ class GA(Coloring):
                     o2.mutate()
                 new_gen.insert(o1)
                 new_gen.insert(o2)
+            if new_gen.total_fitness <= gen.total_fitness:
+                stag_count -= 1
+            else:
+                stag_count = self.stagnation_metric
             gen = new_gen
             gen_count += 1
+        return gen_count
 
 
 if __name__ == "__main__":
@@ -68,10 +75,10 @@ if __name__ == "__main__":
         output_file = f"{input_file}.genetic_algorithm.sol"
     g = Graph.from_file(input_file)
     col = GA(g)
-    _, t = col.solve()
+    gen_count, t = col.solve()
     col.to_file(
         output_file,
         graph_info=f"Coloring the graph defined in '{input_file}'",
-        time_info=f"Genetic Algorithm in {t:0.6f} seconds and after {col.max_generations} generations",
+        time_info=f"Genetic Algorithm in {t:0.6f} seconds and after {gen_count} generations",
         hyperparameters=f"population_size={col.population_size}, crossover_rate={col.crossover_rate}, mutation_rate={col.mutation_rate}",
     )

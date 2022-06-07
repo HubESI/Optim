@@ -1,5 +1,5 @@
 c Coloring the graph defined in 'instances/myciel5.col'
-c Genetic Algorithm in 0.590273 seconds and after 50 generations
+c Genetic Algorithm in 0.560189 seconds and after 49 generations
 c population_size=80, crossover_rate=0.9, mutation_rate=0.01
 s col 6
 l 1 1

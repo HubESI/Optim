@@ -9,6 +9,7 @@ class Population:
     def __init__(self, ga) -> None:
         self.ga = ga
         self.individuals = deque(maxlen=ga.population_size)
+        self.total_fitness = 0
 
     @classmethod
     def create_rand(cls, ga) -> "Population":
@@ -41,7 +42,11 @@ class Population:
         return len(self.individuals)
 
     def insert(self, individual: Individual) -> None:
+        if len(self) == self.individuals.maxlen and len(self):
+            discarded_ind = self.individuals.popleft()
+            self.total_fitness -= discarded_ind.fitness
         self.individuals.append(individual)
+        self.total_fitness += individual.fitness
 
     def insert_many(self, cl: Iterable[Individual]) -> None:
         for ind in cl:
