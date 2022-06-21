@@ -8,10 +8,8 @@ class ConfigurableAdjacencyMatrix(ttk.Frame):
     def __init__(self, master, n_max):
         super().__init__(master)
         self.adj_matrix = AdjacencyMatrix(self, n_max)
-        matrix_label = ttk.Label(self, text="Matrice d'adjacence", font=bold_font)
-        matrix_label.pack(padx=base_padding, pady=base_padding)
-        matrix_config = AdjacencyMatrixTweaks(self, n_max, self.adj_matrix)
-        matrix_config.pack(padx=base_padding, pady=base_padding)
+        adj_matrix_config = AdjacencyMatrixTweaks(self, n_max, self.adj_matrix)
+        adj_matrix_config.pack(padx=base_padding, pady=base_padding)
         self.adj_matrix.pack(padx=base_padding, pady=base_padding)
 
     def get_matrix_values(self):

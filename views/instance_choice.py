@@ -1,8 +1,8 @@
-from random import randint
-from tkinter import CENTER, END, ttk, BooleanVar, filedialog
+from tkinter import BooleanVar, filedialog, ttk
+
+from opt_techniques.graph import Graph
 
 from .config import base_padding, bold_font
-from opt_techniques.graph import Graph
 
 
 class InstanceChoice(ttk.Frame):
@@ -11,12 +11,6 @@ class InstanceChoice(ttk.Frame):
     def __init__(self, master):
         super().__init__(master)
         self.file_instance = None
-        instance_choice_label = ttk.Label(
-            self, text="Source de l'instance", font=bold_font
-        )
-        instance_choice_label.grid(
-            row=0, column=0, padx=base_padding, pady=base_padding
-        )
         self.choice = BooleanVar(self, False)
         adj_matrix_choice = ttk.Radiobutton(
             self,
@@ -26,7 +20,7 @@ class InstanceChoice(ttk.Frame):
             command=lambda: self._on_adj_matrix_select(),
             width=self.radiobtn_width,
         )
-        adj_matrix_choice.grid(row=1, column=0, padx=base_padding, pady=base_padding)
+        adj_matrix_choice.grid(row=0, column=0, padx=base_padding, pady=base_padding)
         file_choice = ttk.Radiobutton(
             self,
             text="Fichier (format DIMACS)",
@@ -35,13 +29,15 @@ class InstanceChoice(ttk.Frame):
             command=lambda: self._on_file_select(),
             width=self.radiobtn_width,
         )
-        file_choice.grid(row=2, column=0, padx=base_padding, pady=base_padding)
+        file_choice.grid(row=1, column=0, padx=base_padding, pady=base_padding)
         self.import_btn = ttk.Button(
             self, text="Importer", state="disabled", command=lambda: self.import_file()
         )
-        self.import_btn.grid(row=2, column=1, padx=base_padding, pady=base_padding)
+        self.import_btn.grid(row=1, column=1, padx=base_padding, pady=base_padding)
         self.info_label = ttk.Label(self)
-        self.info_label.grid(row=3, column=0, padx=base_padding, pady=base_padding)
+        self.info_label.grid(
+            row=2, column=0, columnspan=2, padx=base_padding, pady=base_padding
+        )
 
     def _on_adj_matrix_select(self):
         self.file_instance = None
