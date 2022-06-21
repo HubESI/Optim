@@ -1,7 +1,52 @@
 from random import randint
 from tkinter import CENTER, END, ttk
 
-from .config import base_padding
+from .config import base_padding, bold_font
+
+
+class ConfigurableAdjacencyMatrix(ttk.Frame):
+    def __init__(self, master, n_max):
+        super().__init__(master)
+        adj_matrix = AdjacencyMatrix(self, n_max)
+        matrix_label = ttk.Label(self, text="Matrice d'adjacence", font=bold_font)
+        matrix_label.pack(padx=base_padding, pady=base_padding)
+        matrix_config = AdjacencyMatrixTweaks(self, n_max, adj_matrix)
+        matrix_config.pack(padx=base_padding, pady=base_padding)
+        adj_matrix.pack(padx=base_padding, pady=base_padding)
+
+
+class AdjacencyMatrixTweaks(ttk.Frame):
+    def __init__(self, master, n_max, adj_matrix):
+        super().__init__(master)
+        self.n_combo = self.NCombobox(
+            self, n_max, lambda e: adj_matrix.set_n(self.n_combo.get_val())
+        )
+        self.n_combo.grid(row=0, column=0, padx=base_padding, pady=base_padding)
+        fill_random_btn = ttk.Button(
+            self, text="Générer aléa", command=lambda: adj_matrix.fill_random()
+        )
+        fill_random_btn.grid(row=0, column=1, padx=base_padding, pady=base_padding)
+        clear_btn = ttk.Button(self, text="Effacer", command=lambda: adj_matrix.clear())
+        clear_btn.grid(row=0, column=2, padx=base_padding, pady=base_padding)
+
+    class NCombobox(ttk.Frame):
+        def __init__(self, master, n_max, on_select):
+            super().__init__(master)
+            label = ttk.Label(self, text="N")
+            label.grid(row=0, column=0, padx=base_padding, pady=base_padding)
+            self.combo = ttk.Combobox(
+                self,
+                values=list(range(2, n_max + 1)),
+                width=5,
+                state="readonly",
+            )
+            self.combo.bind("<<ComboboxSelected>>", on_select)
+            self.combo.bind("<FocusOut>", lambda e: self.combo.selection_clear())
+            self.combo.current(n_max - 2)
+            self.combo.grid(row=0, column=1, padx=base_padding, pady=base_padding)
+
+        def get_val(self):
+            return int(self.combo.get())
 
 
 class AdjacencyMatrix(ttk.Frame):
@@ -9,18 +54,16 @@ class AdjacencyMatrix(ttk.Frame):
         super().__init__(master)
         self.n_max = n_max
         self.n = n_max
-        label = ttk.Label(self, text="Matrice d'adjacence")
-        label.grid(row=0, column=0, columnspan=n_max, pady=base_padding)
         self.cells = [[0] * n_max for _ in range(n_max)]
         self.error_label = ttk.Label(self, foreground="red")
-        self.error_label.grid(row=n_max + 1, column=0, columnspan=n_max, pady=5)
+        self.error_label.grid(row=n_max, column=0, columnspan=n_max, pady=5)
 
         def validator_wrapper(v, i, j):
             if self._cell_validator(v):
                 i, j = int(i), int(j)
                 if i != j:
                     self.cells[j][i].config(validate="none")
-                    self.cells[j][i].delete(0, "end")
+                    self.cells[j][i].delete(0, END)
                     self.cells[j][i].insert(0, v)
                     self.cells[j][i].config(validate="key")
                 self.error_label["text"] = ""
@@ -41,7 +84,7 @@ class AdjacencyMatrix(ttk.Frame):
                 if i == j:
                     self.cells[i][j].insert(0, "0")
                     self.cells[i][j].config(state="disabled")
-                self.cells[i][j].grid(row=i + 1, column=j)
+                self.cells[i][j].grid(row=i, column=j)
 
     @staticmethod
     def _cell_validator(v):
@@ -67,13 +110,13 @@ class AdjacencyMatrix(ttk.Frame):
             for i in range(new_n, self.n):
                 for j in range(0, self.n):
                     if i != j:
-                        self.cells[i][j].delete(0, "end")
+                        self.cells[i][j].delete(0, END)
                         self.cells[i][j].config(state="disabled")
-                        self.cells[j][i].delete(0, "end")
+                        self.cells[j][i].delete(0, END)
                         self.cells[j][i].config(state="disabled")
                     else:
                         self.cells[i][i].config(state="normal")
-                        self.cells[i][i].delete(0, "end")
+                        self.cells[i][i].delete(0, END)
                         self.cells[i][i].config(state="disabled")
         else:
             for i in range(self.n, new_n):
@@ -91,6 +134,12 @@ class AdjacencyMatrix(ttk.Frame):
         for i in range(0, self.n):
             for j in range(i, self.n):
                 if i != j:
-                    self.cells[i][j].delete(0, "end")
+                    self.cells[i][j].delete(0, END)
                     r = randint(0, 1)
                     self.cells[i][j].insert(0, str(r))
+
+    def clear(self):
+        for i in range(self.n):
+            for j in range(i, self.n):
+                if i != j:
+                    self.cells[i][j].delete(0, END)

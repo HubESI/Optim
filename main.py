@@ -2,7 +2,7 @@ from tkinter import Tk, font
 
 from views.config import base_padding
 from views.technique_choice import TechniqueChoice
-from views.adjacency_matrix import AdjacencyMatrix
+from views.adjacency_matrix import ConfigurableAdjacencyMatrix
 
 root = Tk()
 defaultFont = font.nametofont("TkDefaultFont")
@@ -11,10 +11,6 @@ root.resizable(False, False)
 root.title("OPTIM")
 # choose_technique = TechniqueChoice(root)
 # choose_technique.pack(padx=2 * base_padding, pady=2 * base_padding)
-adj = AdjacencyMatrix(root, 10)
-adj.grid(row=0, column=0, padx=5, pady=5)
-adj.set_n(5)
-adj.set_n(8)
-
-adj.fill_random()
+conf_adj = ConfigurableAdjacencyMatrix(root, 15)
+conf_adj.pack(padx=base_padding, pady=base_padding)
 root.mainloop()
