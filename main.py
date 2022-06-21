@@ -1,9 +1,7 @@
 from tkinter import Tk, font
 
 from views.config import base_padding
-from views.technique_choice import TechniqueChoice
-from views.adjacency_matrix import ConfigurableAdjacencyMatrix
-from views.instance_choice import InstanceChoice
+from views.generic_technique_view import GenericTechniqueView
 
 root = Tk()
 defaultFont = font.nametofont("TkDefaultFont")
@@ -14,6 +12,8 @@ root.title("OPTIM")
 # choose_technique.pack(padx=2 * base_padding, pady=2 * base_padding)
 # conf_adj = ConfigurableAdjacencyMatrix(root, 15)
 # conf_adj.pack(padx=base_padding, pady=base_padding)
-instance_choice = InstanceChoice(root)
-instance_choice.pack(padx=base_padding, pady=base_padding)
+# instance_choice = InstanceChoice(root)
+# instance_choice.pack(padx=base_padding, pady=base_padding)
+technique_view = GenericTechniqueView(root)
+technique_view.pack(padx=base_padding, pady=base_padding)
 root.mainloop()
