@@ -7,8 +7,9 @@ from .config import base_padding
 class ConfigurableAdjacencyMatrix(ttk.Frame):
     def __init__(self, master, n_max):
         super().__init__(master)
-        self.adj_matrix = AdjacencyMatrix(self, n_max)
-        self.adj_matrix_config = AdjacencyMatrixTweaks(self, n_max, self.adj_matrix)
+        self.n_max = n_max
+        self.adj_matrix = AdjacencyMatrix(self)
+        self.adj_matrix_config = AdjacencyMatrixTweaks(self)
         self.adj_matrix_config.pack(padx=base_padding, pady=base_padding)
         self.adj_matrix.pack(padx=base_padding, pady=base_padding)
 
@@ -25,10 +26,12 @@ class ConfigurableAdjacencyMatrix(ttk.Frame):
 
 
 class AdjacencyMatrixTweaks(ttk.Frame):
-    def __init__(self, master, n_max, adj_matrix):
+    def __init__(self, master):
         super().__init__(master)
+        self.n_max = master.n_max
+        adj_matrix = master.adj_matrix
         self.n_combo = self.NCombobox(
-            self, n_max, lambda e: adj_matrix.set_n(self.n_combo.get_val())
+            self, lambda e: adj_matrix.set_n(self.n_combo.get_val())
         )
         self.n_combo.grid(row=0, column=0, padx=base_padding, pady=base_padding)
         self.fill_random_btn = ttk.Button(
@@ -49,8 +52,9 @@ class AdjacencyMatrixTweaks(ttk.Frame):
         self.clear_btn.config(state="normal")
 
     class NCombobox(ttk.Frame):
-        def __init__(self, master, n_max, on_select):
+        def __init__(self, master, on_select):
             super().__init__(master)
+            n_max = master.n_max
             label = ttk.Label(self, text="N =")
             label.grid(row=0, column=0, padx=base_padding, pady=base_padding)
             self.combo = ttk.Combobox(
@@ -75,13 +79,13 @@ class AdjacencyMatrixTweaks(ttk.Frame):
 
 
 class AdjacencyMatrix(ttk.Frame):
-    def __init__(self, master, n_max):
+    def __init__(self, master):
         super().__init__(master)
-        self.n_max = n_max
-        self.n = n_max
-        self.cells = [[0] * n_max for _ in range(n_max)]
+        self.n_max = master.n_max
+        self.n = self.n_max
+        self.cells = [[0] * self.n_max for _ in range(self.n_max)]
         self.error_label = ttk.Label(self, foreground="red")
-        self.error_label.grid(row=n_max, column=0, columnspan=n_max, pady=5)
+        self.error_label.grid(row=self.n_max, column=0, columnspan=self.n_max, pady=5)
 
         def validator_wrapper(v, i, j):
             if self._cell_validator(v):
@@ -97,8 +101,8 @@ class AdjacencyMatrix(ttk.Frame):
             return False
 
         vcmd = self.register(validator_wrapper)
-        for i in range(n_max):
-            for j in range(n_max):
+        for i in range(self.n_max):
+            for j in range(self.n_max):
                 self.cells[i][j] = ttk.Entry(
                     self,
                     justify=CENTER,
