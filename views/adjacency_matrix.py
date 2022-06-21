@@ -1,19 +1,27 @@
 from random import randint
 from tkinter import CENTER, END, ttk
 
-from .config import base_padding, bold_font
+from .config import base_padding
 
 
 class ConfigurableAdjacencyMatrix(ttk.Frame):
     def __init__(self, master, n_max):
         super().__init__(master)
         self.adj_matrix = AdjacencyMatrix(self, n_max)
-        adj_matrix_config = AdjacencyMatrixTweaks(self, n_max, self.adj_matrix)
-        adj_matrix_config.pack(padx=base_padding, pady=base_padding)
+        self.adj_matrix_config = AdjacencyMatrixTweaks(self, n_max, self.adj_matrix)
+        self.adj_matrix_config.pack(padx=base_padding, pady=base_padding)
         self.adj_matrix.pack(padx=base_padding, pady=base_padding)
 
     def get_matrix_values(self):
         return self.adj_matrix.get_values()
+
+    def disable(self):
+        self.adj_matrix_config.disable()
+        self.adj_matrix.disable()
+
+    def enable(self):
+        self.adj_matrix_config.enable()
+        self.adj_matrix.enable()
 
 
 class AdjacencyMatrixTweaks(ttk.Frame):
@@ -23,12 +31,22 @@ class AdjacencyMatrixTweaks(ttk.Frame):
             self, n_max, lambda e: adj_matrix.set_n(self.n_combo.get_val())
         )
         self.n_combo.grid(row=0, column=0, padx=base_padding, pady=base_padding)
-        fill_random_btn = ttk.Button(
-            self, text="Générer aléa", command=lambda: adj_matrix.fill_random()
+        self.fill_random_btn = ttk.Button(
+            self, text="Générer aléa", command=adj_matrix.fill_random
         )
-        fill_random_btn.grid(row=0, column=1, padx=base_padding, pady=base_padding)
-        clear_btn = ttk.Button(self, text="Effacer", command=lambda: adj_matrix.clear())
-        clear_btn.grid(row=0, column=2, padx=base_padding, pady=base_padding)
+        self.fill_random_btn.grid(row=0, column=1, padx=base_padding, pady=base_padding)
+        self.clear_btn = ttk.Button(self, text="Effacer", command=adj_matrix.clear)
+        self.clear_btn.grid(row=0, column=2, padx=base_padding, pady=base_padding)
+
+    def disable(self):
+        self.n_combo.disable()
+        self.fill_random_btn.config(state="disabled")
+        self.clear_btn.config(state="disabled")
+
+    def enable(self):
+        self.n_combo.enable()
+        self.fill_random_btn.config(state="normal")
+        self.clear_btn.config(state="normal")
 
     class NCombobox(ttk.Frame):
         def __init__(self, master, n_max, on_select):
@@ -48,6 +66,12 @@ class AdjacencyMatrixTweaks(ttk.Frame):
 
         def get_val(self):
             return int(self.combo.get())
+
+        def disable(self):
+            self.combo.config(state="disabled")
+
+        def enable(self):
+            self.combo.config(state="normal")
 
 
 class AdjacencyMatrix(ttk.Frame):
@@ -130,6 +154,20 @@ class AdjacencyMatrix(ttk.Frame):
                         self.cells[i][i].insert(0, "0")
                         self.cells[i][i].config(state="disabled")
         self.n = new_n
+
+    def disable(self):
+        for i in range(self.n):
+            for j in range(i, self.n):
+                if i != j:
+                    self.cells[i][j].config(state="disabled")
+                    self.cells[j][i].config(state="disabled")
+
+    def enable(self):
+        for i in range(self.n):
+            for j in range(i, self.n):
+                if i != j:
+                    self.cells[i][j].config(state="normal")
+                    self.cells[j][i].config(state="normal")
 
     def fill_random(self):
         for i in range(0, self.n):

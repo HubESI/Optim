@@ -20,7 +20,9 @@ class GenericTechniqueView(ttk.Frame):
                 row=row_count, column=1, padx=base_padding, pady=base_padding
             )
             row_count += 1
-            instance_choice0 = InstanceChoice(self)
+            instance_choice0 = InstanceChoice(
+                self, self.conf_adj_matrix.enable, self.conf_adj_matrix.disable
+            )
             instance_choice0.grid(
                 row=row_count, column=1, padx=base_padding, pady=base_padding
             )
@@ -35,7 +37,9 @@ class GenericTechniqueView(ttk.Frame):
             row=row_count, column=1, padx=base_padding, pady=base_padding
         )
         row_count += 1
-        self.instance_choice = InstanceChoice(self)
+        self.instance_choice = InstanceChoice(
+            self, self.conf_adj_matrix.enable, self.conf_adj_matrix.disable
+        )
         self.instance_choice.grid(
             row=row_count, column=1, padx=base_padding, pady=base_padding
         )
@@ -51,7 +55,6 @@ class GenericTechniqueView(ttk.Frame):
             row=row_count, column=1, padx=base_padding, pady=base_padding
         )
         row_count += 1
-        print(row_count)
         self.conf_adj_matrix.grid(
             row=1, column=0, rowspan=row_count - 1, padx=base_padding, pady=base_padding
         )

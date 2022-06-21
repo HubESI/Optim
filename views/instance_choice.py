@@ -2,22 +2,33 @@ from tkinter import BooleanVar, filedialog, ttk
 
 from opt_techniques.graph import Graph
 
-from .config import base_padding, bold_font
+from .config import base_padding
 
 
 class InstanceChoice(ttk.Frame):
     radiobtn_width = 20
 
-    def __init__(self, master):
+    def __init__(self, master, on_adj_matrix_select, on_file_select):
         super().__init__(master)
         self.file_instance = None
         self.choice = BooleanVar(self, False)
+
+        def on_adj_matrix_select_wrapper():
+            on_adj_matrix_select()
+            self.file_instance = None
+            self.info_label["text"] = ""
+            self.import_btn.config(state="disabled")
+
+        def on_file_select_wrapper():
+            on_file_select()
+            self.import_btn.config(state="normal")
+
         adj_matrix_choice = ttk.Radiobutton(
             self,
             text="Matrice entrée",
             variable=self.choice,
             value=False,
-            command=lambda: self._on_adj_matrix_select(),
+            command=on_adj_matrix_select_wrapper,
             width=self.radiobtn_width,
         )
         adj_matrix_choice.grid(row=0, column=0, padx=base_padding, pady=base_padding)
@@ -26,26 +37,18 @@ class InstanceChoice(ttk.Frame):
             text="Fichier (format DIMACS)",
             variable=self.choice,
             value=True,
-            command=lambda: self._on_file_select(),
+            command=on_file_select_wrapper,
             width=self.radiobtn_width,
         )
         file_choice.grid(row=1, column=0, padx=base_padding, pady=base_padding)
         self.import_btn = ttk.Button(
-            self, text="Importer", state="disabled", command=lambda: self.import_file()
+            self, text="Importer", state="disabled", command=self.import_file
         )
         self.import_btn.grid(row=1, column=1, padx=base_padding, pady=base_padding)
         self.info_label = ttk.Label(self)
         self.info_label.grid(
             row=2, column=0, columnspan=2, padx=base_padding, pady=base_padding
         )
-
-    def _on_adj_matrix_select(self):
-        self.file_instance = None
-        self.info_label["text"] = ""
-        self.import_btn.config(state="disabled")
-
-    def _on_file_select(self):
-        self.import_btn.config(state="normal")
 
     def is_file_selected(self):
         return self.choice
