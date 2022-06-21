@@ -1,3 +1,4 @@
+import textwrap
 from tkinter import BooleanVar, filedialog, ttk
 
 from opt_techniques.graph import Graph
@@ -6,6 +7,7 @@ from .config import base_padding
 
 
 class InstanceChoice(ttk.Frame):
+    info_label_width = 40
     radiobtn_width = 20
 
     def __init__(self, master, on_adj_matrix_select, on_file_select):
@@ -45,7 +47,7 @@ class InstanceChoice(ttk.Frame):
             self, text="Importer", state="disabled", command=self.import_file
         )
         self.import_btn.grid(row=1, column=1, padx=base_padding, pady=base_padding)
-        self.info_label = ttk.Label(self)
+        self.info_label = ttk.Label(self, width=self.info_label_width)
         self.info_label.grid(
             row=2, column=0, columnspan=2, padx=base_padding, pady=base_padding
         )
@@ -67,10 +69,12 @@ class InstanceChoice(ttk.Frame):
         try:
             self.file_instance = Graph.from_file(filename)
             instance_name = filename.split("/")[-1]
-            self.info_label.config(foreground="black")
-            self.info_label[
-                "text"
-            ] = f'Instance chargée avec succès depuis le fichier "{instance_name}"'
+            self.info_label.config(foreground="blue")
+            info_str = (
+                f'Instance chargée avec succès depuis le fichier "{instance_name}"'
+            )
+            info_str = "\n".join(textwrap.wrap(info_str, width=self.info_label_width))
+            self.info_label["text"] = info_str
         except Exception:
             self.file_instance = None
             self.info_label.config(foreground="red")
