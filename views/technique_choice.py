@@ -20,11 +20,15 @@ class TechniqueChoice(ttk.Frame):
         separator1.pack(padx=base_padding, pady=3 * base_padding, fill="x")
         heuristics_label = ttk.Label(self, text="Heuristiques", font=bold_font)
         heuristics_label.pack(padx=base_padding, pady=base_padding)
-        bnb_h1 = ttk.Button(self, text="Heuristique B&B 1", width=self.button_width)
-        bnb_h1.pack(pady=base_padding, padx=base_padding)
-        bnb_h2 = ttk.Button(self, text="Heuristique B&B 2", width=self.button_width)
-        bnb_h2.pack(pady=base_padding, padx=base_padding)
-        welsh_powell = ttk.Button(self, text="Welsh Powell", width=self.button_width)
+        bnb_heuristics = ttk.Button(
+            self,
+            text="Heuristiques basées sur Branch and Bound",
+            width=self.button_width,
+        )
+        bnb_heuristics.pack(pady=base_padding, padx=base_padding)
+        welsh_powell = ttk.Button(
+            self, text="Welsh and Powell", width=self.button_width
+        )
         welsh_powell.pack(pady=base_padding, padx=base_padding)
         separator2 = ttk.Separator(self, orient="horizontal")
         separator2.pack(padx=base_padding, pady=3 * base_padding, fill="x")
@@ -43,6 +47,6 @@ class TechniqueChoice(ttk.Frame):
         woa = ttk.Button(
             self,
             text="The Whale Optimization Algorithm",
-            width=self.choice_button_width,
+            width=self.button_width,
         )
         woa.pack(pady=base_padding, padx=base_padding)
