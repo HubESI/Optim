@@ -7,12 +7,15 @@ from .config import base_padding, bold_font
 class ConfigurableAdjacencyMatrix(ttk.Frame):
     def __init__(self, master, n_max):
         super().__init__(master)
-        adj_matrix = AdjacencyMatrix(self, n_max)
+        self.adj_matrix = AdjacencyMatrix(self, n_max)
         matrix_label = ttk.Label(self, text="Matrice d'adjacence", font=bold_font)
         matrix_label.pack(padx=base_padding, pady=base_padding)
-        matrix_config = AdjacencyMatrixTweaks(self, n_max, adj_matrix)
+        matrix_config = AdjacencyMatrixTweaks(self, n_max, self.adj_matrix)
         matrix_config.pack(padx=base_padding, pady=base_padding)
-        adj_matrix.pack(padx=base_padding, pady=base_padding)
+        self.adj_matrix.pack(padx=base_padding, pady=base_padding)
+
+    def get_matrix_values(self):
+        return self.adj_matrix.get_values()
 
 
 class AdjacencyMatrixTweaks(ttk.Frame):
@@ -32,7 +35,7 @@ class AdjacencyMatrixTweaks(ttk.Frame):
     class NCombobox(ttk.Frame):
         def __init__(self, master, n_max, on_select):
             super().__init__(master)
-            label = ttk.Label(self, text="N")
+            label = ttk.Label(self, text="N =")
             label.grid(row=0, column=0, padx=base_padding, pady=base_padding)
             self.combo = ttk.Combobox(
                 self,
