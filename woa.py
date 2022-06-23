@@ -12,7 +12,7 @@ CONFLICT_PENALTY = 10
 
 
 class WOA(Coloring):
-    def __init__(self, g: Graph, nb_search_agents: int = 30, max_iter: int = 500):
+    def __init__(self, g: Graph, nb_search_agents: int = 50, max_iter: int = 100):
         super().__init__(g)
         self.dim = self.g.order
         self.nb_search_agents = nb_search_agents
@@ -32,13 +32,15 @@ class WOA(Coloring):
                 if position[vi] == position[adji] and self.adj_mat[vi][adji]:
                     nb_conflicts += 1
         nb_colors = len(used_colors)
-        fitness = 1 / (self.conflict_penalty * nb_conflicts + nb_colors)
+        fitness = self.conflict_penalty * nb_conflicts + nb_colors
         # Update the leader
         if fitness < self.leader_score:
             self.leader_score = fitness
             # Update alpha
             self.leader_pos = position.copy()
             self.solution = (nb_colors, self.leader_pos)
+            if nb_conflicts > 0:
+                print("solution avec conflit")
 
     @timer
     def solve(self):
