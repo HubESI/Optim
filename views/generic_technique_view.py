@@ -105,12 +105,19 @@ class GenericTechniqueView(ttk.Frame):
                 info_message = "L'exécution a été arrêtée"
 
             solve_process.start()
+            self.parameters.disable()
+            self.instance_choice.disable()
             self.solve_btn.config(text="Arrêter", command=kill_solve_process)
             solve_process.join()
             messagebox.showinfo(parent=self, title="Notification", message=info_message)
-            print(results)
             self.info_label.config(text="")
             self.solve_btn.config(text="Exécuter", command=self.solve)
+            # open solutoin window
+            t = results[1]
+            print(t, coloring.solution)
+            # after that
+            self.parameters.enable()
+            self.instance_choice.enable()
 
         threading.Thread(target=solve_thread_job, daemon=True).start()
         self.info_label.config(foreground="blue")

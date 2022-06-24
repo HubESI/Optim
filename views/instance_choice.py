@@ -28,7 +28,7 @@ class InstanceChoice(ttk.Frame):
             on_file_select()
             self.import_btn.config(state="normal")
 
-        adj_matrix_choice = ttk.Radiobutton(
+        self.adj_matrix_choice = ttk.Radiobutton(
             self,
             text="Matrice entrée",
             variable=self.choice,
@@ -36,8 +36,10 @@ class InstanceChoice(ttk.Frame):
             command=on_adj_matrix_select_wrapper,
             width=self.radiobtn_width,
         )
-        adj_matrix_choice.grid(row=0, column=0, padx=BASE_PADDING, pady=BASE_PADDING)
-        file_choice = ttk.Radiobutton(
+        self.adj_matrix_choice.grid(
+            row=0, column=0, padx=BASE_PADDING, pady=BASE_PADDING
+        )
+        self.file_choice = ttk.Radiobutton(
             self,
             text="Fichier (format DIMACS)",
             variable=self.choice,
@@ -45,7 +47,7 @@ class InstanceChoice(ttk.Frame):
             command=on_file_select_wrapper,
             width=self.radiobtn_width,
         )
-        file_choice.grid(row=1, column=0, padx=BASE_PADDING, pady=BASE_PADDING)
+        self.file_choice.grid(row=1, column=0, padx=BASE_PADDING, pady=BASE_PADDING)
         self.import_btn = ttk.Button(
             self, text="Importer", state="disabled", command=self.import_file
         )
@@ -84,3 +86,13 @@ class InstanceChoice(ttk.Frame):
             self.file_instance = None
             self.info_label.config(foreground="red")
             self.info_label["text"] = "Le fichier sélectionné est invalide"
+
+    def disable(self):
+        self.adj_matrix_choice.config(state="disabled")
+        self.file_choice.config(state="disabled")
+        self.import_btn.config(state="disabled")
+
+    def enable(self):
+        self.adj_matrix_choice.config(state="normal")
+        self.file_choice.config(state="normal")
+        self.import_btn.config(state="normal")
