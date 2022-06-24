@@ -65,10 +65,7 @@ class WOA(Coloring):
             for i in range(0, self.nb_search_agents):
 
                 # Return back the search agents that go beyond the boundaries of the search space
-                for j in range(0, self.dim):
-                    self.positions[i, j] = np.clip(
-                        np.round(self.positions[i, j]), 1, self.dim
-                    )
+                self.positions[i, :] = np.clip(self.positions[i, :], 1, self.dim)
 
                 # Calculate objective function for each search agent and update the leader
                 self.objf(self.positions[i, :])
