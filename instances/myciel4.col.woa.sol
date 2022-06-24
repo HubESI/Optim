@@ -1,27 +1,28 @@
 c Coloring the graph defined in 'instances/myciel4.col'
-c WOA in 3.637298 seconds after 100 iteration
-c nb_search_agents=50
-s col 8
+c WOA in 0.380262 seconds after 100 iteration, nb_search_agents=10
+c Final leader score info
+c score=55 nb_colors=5 nb_conflicts=5
+s col 5
 l 1 1
-l 2 12
-l 3 9
-l 4 14
-l 5 4
+l 2 2
+l 3 1
+l 4 2
+l 5 3
 l 6 1
-l 7 15
-l 8 15
-l 9 15
-l 10 5
-l 11 12
-l 12 5
-l 13 4
-l 14 14
+l 7 2
+l 8 1
+l 9 2
+l 10 3
+l 11 4
+l 12 1
+l 13 2
+l 14 1
 l 15 2
-l 16 12
+l 16 3
 l 17 1
-l 18 4
-l 19 5
+l 18 2
+l 19 1
 l 20 2
-l 21 15
-l 22 12
-l 23 9
+l 21 3
+l 22 4
+l 23 5

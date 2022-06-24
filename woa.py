@@ -12,14 +12,17 @@ CONFLICT_PENALTY = 10
 
 
 class WOA(Coloring):
-    def __init__(self, g: Graph, nb_search_agents: int = 50, max_iter: int = 100):
+    def __init__(self, g: Graph, nb_search_agents: int = 10, max_iter: int = 100):
         super().__init__(g)
+        self.greedy_coloring()
+        self.bound = self.solution[0]
         self.dim = self.g.order
         self.nb_search_agents = nb_search_agents
         self.conflict_penalty = CONFLICT_PENALTY
         self.max_iter = max_iter
         self.leader_pos = None
         self.leader_score = None
+        self.leader_score_info = (None, None, None)
         self.positions = None
         self.convergence_curve = None
 
@@ -33,14 +36,9 @@ class WOA(Coloring):
                     nb_conflicts += 1
         nb_colors = len(used_colors)
         fitness = self.conflict_penalty * nb_conflicts + nb_colors
-        # Update the leader
-        if fitness < self.leader_score:
-            self.leader_score = fitness
-            # Update alpha
-            self.leader_pos = position.copy()
-            self.solution = (nb_colors, self.leader_pos)
-            if nb_conflicts > 0:
-                print("solution avec conflit")
+        if nb_colors < self.solution[0] and nb_conflicts == 0:
+            self.solution = (nb_colors, position)
+        return fitness, nb_colors, nb_conflicts
 
     @timer
     def solve(self):
@@ -51,7 +49,7 @@ class WOA(Coloring):
         # Initialize the positions of search agents
         self.positions = np.zeros((self.nb_search_agents, self.dim), dtype=int)
         for i in range(self.nb_search_agents):
-            self.positions[i, :] = np.random.randint((1, self.dim + 1, self.dim))
+            self.positions[i, :] = np.random.randint(1, self.bound + 1, self.dim)
 
         # Initialize convergence
         self.convergence_curve = np.zeros(self.max_iter)
@@ -63,10 +61,16 @@ class WOA(Coloring):
             for i in range(0, self.nb_search_agents):
 
                 # Return back the search agents that go beyond the boundaries of the search space
-                self.positions[i, :] = np.clip(self.positions[i, :], 1, self.dim)
+                self.positions[i, :] = np.clip(self.positions[i, :], 1, self.bound)
 
-                # Calculate objective function for each search agent and update the leader
-                self.objf(self.positions[i, :])
+                # Calculate objective function for each search agent
+                fitness, nb_colors, nb_conflicts = self.objf(self.positions[i, :])
+                # Update the leader
+                if fitness < self.leader_score:
+                    self.leader_score = fitness
+                    self.leader_score_info = (fitness, nb_colors, nb_conflicts)
+                    # Update alpha
+                    self.leader_pos = self.positions[i, :].copy()
 
             # a decreases linearly from 2 to 0 in Eq. (2.3)
             a = 2 - t * ((2) / self.max_iter)
@@ -127,7 +131,7 @@ class WOA(Coloring):
             )
             t = t + 1
 
-        return self.solution
+        return self.leader_pos, self.leader_score_info
 
 
 if __name__ == "__main__":
@@ -141,11 +145,12 @@ if __name__ == "__main__":
         output_file = f"{input_file}.woa.sol"
     g = Graph.from_file(input_file)
     col = WOA(g)
-    info, t = col.solve()
-    gen_count, last_gen = info
+    final_leader, t = col.solve()
+    pos, score_info = final_leader
     col.to_file(
         output_file,
         graph_info=f"Coloring the graph defined in '{input_file}'",
-        time_info=f"WOA in {t:0.6f} seconds after {col.max_iter} iteration",
-        hyperparameters=f"nb_search_agents={col.nb_search_agents}",
+        time_info=f"WOA in {t:0.6f} seconds after {col.max_iter} iteration, nb_search_agents={col.nb_search_agents}",
+        final_leader=f"Final leader score info",
+        info=f"score={score_info[0]} nb_colors={score_info[1]} nb_conflicts={score_info[2]}",
     )
