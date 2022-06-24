@@ -1,7 +1,7 @@
 c Coloring the graph defined in 'instances/queen5_5.col'
-c WOA in 0.363658 seconds after 100 iteration, nb_search_agents=10
+c WOA in 0.372212 seconds after 100 iteration, nb_search_agents=10
 c Final leader score info
-c score=13 nb_colors=13 nb_conflicts=0
+c score=15 nb_colors=15 nb_conflicts=0
 s col 8
 l 1 1
 l 2 2
