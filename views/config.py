@@ -1,4 +1,6 @@
-n_max = 15
+APP_NAME = "OPTIM"
 
-base_padding = 5
-bold_font = "DejaVu\ Sans 12 bold"
+BASE_PADDING = 5
+BOLD_FONT = "DejaVu\ Sans 12 bold"
+
+N_MAX = 15

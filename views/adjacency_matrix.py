@@ -1,7 +1,7 @@
 from random import randint
 from tkinter import CENTER, END, ttk
 
-from .config import base_padding
+from .config import BASE_PADDING
 
 
 class ConfigurableAdjacencyMatrix(ttk.Frame):
@@ -10,8 +10,8 @@ class ConfigurableAdjacencyMatrix(ttk.Frame):
         self.n_max = n_max
         self.adj_matrix = AdjacencyMatrix(self)
         self.adj_matrix_config = AdjacencyMatrixTweaks(self)
-        self.adj_matrix_config.pack(padx=base_padding, pady=base_padding)
-        self.adj_matrix.pack(padx=base_padding, pady=base_padding)
+        self.adj_matrix_config.pack(padx=BASE_PADDING, pady=BASE_PADDING)
+        self.adj_matrix.pack(padx=BASE_PADDING, pady=BASE_PADDING)
 
     def get_matrix_values(self):
         return self.adj_matrix.get_values()
@@ -33,13 +33,13 @@ class AdjacencyMatrixTweaks(ttk.Frame):
         self.n_combo = self.NCombobox(
             self, lambda e: adj_matrix.set_n(self.n_combo.get_val())
         )
-        self.n_combo.grid(row=0, column=0, padx=base_padding, pady=base_padding)
+        self.n_combo.grid(row=0, column=0, padx=BASE_PADDING, pady=BASE_PADDING)
         self.fill_random_btn = ttk.Button(
             self, text="Générer aléa", command=adj_matrix.fill_random
         )
-        self.fill_random_btn.grid(row=0, column=1, padx=base_padding, pady=base_padding)
+        self.fill_random_btn.grid(row=0, column=1, padx=BASE_PADDING, pady=BASE_PADDING)
         self.clear_btn = ttk.Button(self, text="Effacer", command=adj_matrix.clear)
-        self.clear_btn.grid(row=0, column=2, padx=base_padding, pady=base_padding)
+        self.clear_btn.grid(row=0, column=2, padx=BASE_PADDING, pady=BASE_PADDING)
 
     def disable(self):
         self.n_combo.disable()
@@ -56,7 +56,7 @@ class AdjacencyMatrixTweaks(ttk.Frame):
             super().__init__(master)
             n_max = master.n_max
             label = ttk.Label(self, text="N =")
-            label.grid(row=0, column=0, padx=base_padding, pady=base_padding)
+            label.grid(row=0, column=0, padx=BASE_PADDING, pady=BASE_PADDING)
             self.combo = ttk.Combobox(
                 self,
                 values=list(range(2, n_max + 1)),
@@ -66,7 +66,7 @@ class AdjacencyMatrixTweaks(ttk.Frame):
             self.combo.bind("<<ComboboxSelected>>", on_select)
             self.combo.bind("<FocusOut>", lambda e: self.combo.selection_clear())
             self.combo.current(n_max - 2)
-            self.combo.grid(row=0, column=1, padx=base_padding, pady=base_padding)
+            self.combo.grid(row=0, column=1, padx=BASE_PADDING, pady=BASE_PADDING)
 
         def get_val(self):
             return int(self.combo.get())
