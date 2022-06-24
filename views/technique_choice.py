@@ -1,6 +1,8 @@
-from tkinter import ttk
+from tkinter import Toplevel, ttk
 
+from .bnb_parameters import BnBParameters
 from .config import BASE_PADDING, BOLD_FONT
+from .generic_technique_view import GenericTechniqueView
 
 
 class TechniqueChoice(ttk.Frame):
@@ -12,7 +14,13 @@ class TechniqueChoice(ttk.Frame):
             self, text="Méthodes exactes", font=BOLD_FONT
         )
         exact_techniques_label.pack(padx=BASE_PADDING, pady=BASE_PADDING)
-        bnb = ttk.Button(self, text="Branch and Bound", width=self.button_width)
+        self.bnb_window = self.TechniqueWindow(self, "Branch and Bound", BnBParameters)
+        bnb = ttk.Button(
+            self,
+            text="Branch and Bound",
+            width=self.button_width,
+            command=self.bnb_window.open,
+        )
         bnb.pack(pady=BASE_PADDING, padx=BASE_PADDING)
         dp = ttk.Button(self, text="Programmation dynamique", width=self.button_width)
         dp.pack(pady=BASE_PADDING, padx=BASE_PADDING)
@@ -45,8 +53,39 @@ class TechniqueChoice(ttk.Frame):
         )
         new_metaheuristics_label.pack(padx=BASE_PADDING, pady=BASE_PADDING)
         woa = ttk.Button(
-            self,
-            text="The Whale Optimization Algorithm",
-            width=self.button_width,
+            self, text="The Whale Optimization Algorithm", width=self.button_width
         )
         woa.pack(padx=BASE_PADDING, pady=BASE_PADDING)
+
+    class TechniqueWindow:
+        def __init__(self, outer, name, parameters_class):
+            self.outer = outer
+            self.name = name
+            self.parameters_class = parameters_class
+            self.window = None
+            self.is_open = False
+
+        def open(self):
+            if self.is_open:
+                self.window.lift()
+            else:
+                self.window = self.outer.open_generic_technique(
+                    self.name, self.parameters_class
+                )
+                self.is_open = True
+
+                def on_closing():
+                    self.window.destroy()
+                    self.window = None
+                    self.is_open = False
+
+                self.window.protocol("WM_DELETE_WINDOW", on_closing)
+
+    def open_generic_technique(self, name, parameters_class):
+        window = Toplevel(self)
+        window.resizable(False, False)
+        window.title(name)
+        GenericTechniqueView(window, parameters_class).pack(
+            padx=BASE_PADDING, pady=BASE_PADDING
+        )
+        return window

@@ -106,7 +106,7 @@ class AdjacencyMatrix(ttk.Frame):
                 self.cells[i][j] = ttk.Entry(
                     self,
                     justify=CENTER,
-                    width=5,
+                    width=3,
                     validate="key",
                     validatecommand=(vcmd, "%P", i, j),
                 )

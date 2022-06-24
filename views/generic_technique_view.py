@@ -6,13 +6,13 @@ from .instance_choice import InstanceChoice
 
 
 class GenericTechniqueView(ttk.Frame):
-    def __init__(self, master, parameters_frame=0):
+    def __init__(self, master, parameters_class=None):
         super().__init__(master)
         adj_matrix_label = ttk.Label(self, text="Matrice d'adjacence", font=BOLD_FONT)
         adj_matrix_label.grid(row=0, column=0, padx=BASE_PADDING, pady=BASE_PADDING)
         self.conf_adj_matrix = ConfigurableAdjacencyMatrix(self, N_MAX)
         row_count = 1
-        if parameters_frame:
+        if parameters_class:
             technique_parameters_label = ttk.Label(
                 self, text="Paramètres de la méthode", font=BOLD_FONT
             )
@@ -20,10 +20,8 @@ class GenericTechniqueView(ttk.Frame):
                 row=row_count, column=1, padx=BASE_PADDING, pady=BASE_PADDING
             )
             row_count += 1
-            instance_choice0 = InstanceChoice(
-                self, self.conf_adj_matrix.enable, self.conf_adj_matrix.disable
-            )
-            instance_choice0.grid(
+            parameters_frame = parameters_class(self)
+            parameters_frame.grid(
                 row=row_count, column=1, padx=BASE_PADDING, pady=BASE_PADDING
             )
             row_count += 1

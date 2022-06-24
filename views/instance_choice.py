@@ -63,6 +63,7 @@ class InstanceChoice(ttk.Frame):
 
     def import_file(self):
         filename = filedialog.askopenfilename(
+            parent=self,
             filetypes=[("DIMACS", "*.col"), ("Other", "*")],
             title="Veuillez choisir le fichier de l'instance",
         )
