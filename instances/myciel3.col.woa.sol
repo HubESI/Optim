@@ -1,5 +1,5 @@
 c Coloring the graph defined in 'instances/myciel3.col'
-c WOA in 0.204202 seconds after 100 iteration, nb_search_agents=10
+c WOA in 0.167521 seconds after 100 iteration, nb_search_agents=10
 c Final leader score info
 c score=4 nb_colors=4 nb_conflicts=0
 s col 4
