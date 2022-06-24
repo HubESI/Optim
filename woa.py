@@ -50,10 +50,8 @@ class WOA(Coloring):
 
         # Initialize the positions of search agents
         self.positions = np.zeros((self.nb_search_agents, self.dim), dtype=int)
-        for i in range(self.dim):
-            self.positions[:, i] = (
-                np.random.uniform(0, 1, self.nb_search_agents) * (self.dim - 1) + 1
-            )
+        for i in range(self.nb_search_agents):
+            self.positions[i, :] = np.random.randint(1, self.dim, self.dim)
 
         # Initialize convergence
         self.convergence_curve = np.zeros(self.max_iter)
