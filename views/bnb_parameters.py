@@ -14,3 +14,6 @@ class BnBParameters(ttk.Frame):
             offvalue=False,
         )
         heuristic_init_chkbtn.pack(padx=BASE_PADDING, pady=BASE_PADDING)
+
+    def get_kwargs(self):
+        return {"heuristic_init": self.heuristic_init.get()}

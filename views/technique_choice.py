@@ -1,5 +1,7 @@
 from tkinter import Toplevel, ttk
 
+from opt_techniques.branch_and_bound import BranchAndBound
+
 from .bnb_parameters import BnBParameters
 from .config import BASE_PADDING, BOLD_FONT
 from .generic_technique_view import GenericTechniqueView
@@ -14,7 +16,9 @@ class TechniqueChoice(ttk.Frame):
             self, text="Méthodes exactes", font=BOLD_FONT
         )
         exact_techniques_label.pack(padx=BASE_PADDING, pady=BASE_PADDING)
-        self.bnb_window = self.TechniqueWindow(self, "Branch and Bound", BnBParameters)
+        self.bnb_window = self.TechniqueWindow(
+            self, "Branch and Bound", BranchAndBound, BnBParameters
+        )
         bnb = ttk.Button(
             self,
             text="Branch and Bound",
@@ -58,9 +62,10 @@ class TechniqueChoice(ttk.Frame):
         woa.pack(padx=BASE_PADDING, pady=BASE_PADDING)
 
     class TechniqueWindow:
-        def __init__(self, outer, name, parameters_class):
+        def __init__(self, outer, name, coloring_class, parameters_class=None):
             self.outer = outer
             self.name = name
+            self.coloring_class = coloring_class
             self.parameters_class = parameters_class
             self.window = None
             self.is_open = False
@@ -70,7 +75,7 @@ class TechniqueChoice(ttk.Frame):
                 self.window.lift()
             else:
                 self.window = self.outer.open_generic_technique(
-                    self.name, self.parameters_class
+                    self.name, self.coloring_class, self.parameters_class
                 )
                 self.is_open = True
 
@@ -81,11 +86,11 @@ class TechniqueChoice(ttk.Frame):
 
                 self.window.protocol("WM_DELETE_WINDOW", on_closing)
 
-    def open_generic_technique(self, name, parameters_class):
+    def open_generic_technique(self, name, coloring_class, parameters_class):
         window = Toplevel(self)
         window.resizable(False, False)
         window.title(name)
-        GenericTechniqueView(window, parameters_class).pack(
+        GenericTechniqueView(window, coloring_class, parameters_class).pack(
             padx=BASE_PADDING, pady=BASE_PADDING
         )
         return window

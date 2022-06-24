@@ -3,7 +3,7 @@ import time
 from abc import abstractmethod
 from typing import Any, Callable, List, Tuple
 
-from graph import Graph
+from .graph import Graph
 
 
 def timer(func: Callable) -> Callable[..., Tuple[Any, float]]:

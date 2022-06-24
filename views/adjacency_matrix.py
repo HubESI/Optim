@@ -13,7 +13,7 @@ class ConfigurableAdjacencyMatrix(ttk.Frame):
         self.adj_matrix_config.pack(padx=BASE_PADDING, pady=BASE_PADDING)
         self.adj_matrix.pack(padx=BASE_PADDING, pady=BASE_PADDING)
 
-    def get_matrix_values(self):
+    def get_matrix(self):
         return self.adj_matrix.get_values()
 
     def disable(self):

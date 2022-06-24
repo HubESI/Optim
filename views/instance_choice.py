@@ -10,10 +10,13 @@ class InstanceChoice(ttk.Frame):
     info_label_width = 40
     radiobtn_width = 20
 
-    def __init__(self, master, on_adj_matrix_select, on_file_select):
+    def __init__(
+        self, master, on_adj_matrix_select, on_file_select, on_successful_loading
+    ):
         super().__init__(master)
         self.file_instance = None
         self.choice = BooleanVar(self, False)
+        self.on_successful_loading = on_successful_loading
 
         def on_adj_matrix_select_wrapper():
             on_adj_matrix_select()
@@ -53,13 +56,13 @@ class InstanceChoice(ttk.Frame):
         )
 
     def is_file_selected(self):
-        return self.choice
+        return self.choice.get()
 
     def is_adj_matrix_selected(self):
-        return not self.choice
+        return not self.is_file_selected()
 
     def get_file_instance(self):
-        return self.file_instance()
+        return self.file_instance
 
     def import_file(self):
         filename = filedialog.askopenfilename(
@@ -76,6 +79,7 @@ class InstanceChoice(ttk.Frame):
             )
             info_str = "\n".join(textwrap.wrap(info_str, width=self.info_label_width))
             self.info_label["text"] = info_str
+            self.on_successful_loading()
         except Exception:
             self.file_instance = None
             self.info_label.config(foreground="red")
