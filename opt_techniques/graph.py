@@ -34,3 +34,15 @@ class Graph:
                     x, y = map(int, line.split()[1:])
                     adj_mat[x - 1][y - 1] = adj_mat[y - 1][x - 1] = True
         return cls(adj_mat, instance_name, e)
+
+    def to_file(self, file_path: str) -> None:
+        with open(file_path, "w") as f:
+            if self.name:
+                f.write(f"c {self.name}\n")
+            f.write(f"p edge {self.v} {self.e}\n")
+            edges_lines = []
+            for i in range(self.v):
+                for j in range(i + 1, self.v):
+                    if self.adj_mat[i][j]:
+                        edges_lines.append(f"e {i+1} {j+1}\n")
+            f.writelines(edges_lines)

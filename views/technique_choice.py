@@ -1,4 +1,4 @@
-from tkinter import Toplevel, ttk
+from tkinter import Toplevel, messagebox, ttk
 
 from opt_techniques.branch_and_bound import BranchAndBound
 
@@ -74,7 +74,12 @@ class TechniqueChoice(ttk.Frame):
             )
 
     def open_generic_technique(self, name, coloring_class, parameters_class):
+        def on_closing():
+            if messagebox.askokcancel("Confirmer", "Quitter ?", parent=window):
+                window.destroy()
+
         window = Toplevel(self)
+        window.protocol("WM_DELETE_WINDOW", on_closing)
         window.resizable(False, False)
         window.title(name)
         GenericTechniqueView(window, coloring_class, parameters_class).pack(

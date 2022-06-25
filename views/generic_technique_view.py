@@ -1,6 +1,7 @@
 import multiprocessing
 import threading
 from tkinter import BOTH, HORIZONTAL, LEFT, Toplevel, X, messagebox, ttk
+from tkinter.filedialog import asksaveasfile
 
 import networkx as nx
 import numpy as np
@@ -50,6 +51,7 @@ class GenericTechniqueView(ttk.Frame):
 
         self.instance_choice = InstanceChoice(
             instance_choice_frame,
+            self.save_adj_matrix,
             on_adj_matrix_select,
             on_file_select,
             on_successful_loading,
@@ -129,6 +131,22 @@ class GenericTechniqueView(ttk.Frame):
             canvas.get_tk_widget().pack(fill=BOTH, expand=1)
 
         draw_graph()
+
+    def save_adj_matrix(self):
+        f = asksaveasfile(
+            parent=self,
+            filetypes=[("DIMACS", "*.col"), ("Other", "*")],
+            defaultextension=".col",
+            initialfile="custom",
+        )
+        if not f:
+            return False
+        try:
+            Graph(self.conf_adj_matrix.get_matrix()).to_file(f.name)
+            return True
+        except Exception as e:
+            print(e)
+            return False
 
     def get_instance(self):
         if self.instance_choice.is_file_selected():
