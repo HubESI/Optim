@@ -84,7 +84,14 @@ class GenericTechniqueView(ttk.Frame):
         self.info_label.pack(pady=BASE_PADDING)
 
     def preview_graph(self):
+        self.preview_btn.config(state="disabled")
         preview = Toplevel(self)
+
+        def on_closing():
+            self.preview_btn.config(state="normal")
+            preview.destroy()
+
+        preview.protocol("WM_DELETE_WINDOW", on_closing)
         instance = self.get_instance()
         preview.title(f"Visualisation du graphe {instance.name or 'Custom'}")
         adj_mat = np.array(instance.adj_mat)
