@@ -67,24 +67,11 @@ class TechniqueChoice(ttk.Frame):
             self.name = name
             self.coloring_class = coloring_class
             self.parameters_class = parameters_class
-            self.window = None
-            self.is_open = False
 
         def open(self):
-            if self.is_open:
-                self.window.lift()
-            else:
-                self.window = self.outer.open_generic_technique(
-                    self.name, self.coloring_class, self.parameters_class
-                )
-                self.is_open = True
-
-                def on_closing():
-                    self.window.destroy()
-                    self.window = None
-                    self.is_open = False
-
-                self.window.protocol("WM_DELETE_WINDOW", on_closing)
+            self.outer.open_generic_technique(
+                self.name, self.coloring_class, self.parameters_class
+            )
 
     def open_generic_technique(self, name, coloring_class, parameters_class):
         window = Toplevel(self)
@@ -93,4 +80,3 @@ class TechniqueChoice(ttk.Frame):
         GenericTechniqueView(window, coloring_class, parameters_class).pack(
             padx=BASE_PADDING, pady=BASE_PADDING
         )
-        return window
