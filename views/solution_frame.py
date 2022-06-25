@@ -10,10 +10,11 @@ from .config import SPRING_LAYOUT_SEED
 
 
 class SolutionFrame(ttk.Frame):
-    def __init__(self, master, coloring, t):
+    def __init__(self, master, coloring, t, parameters=None):
         super().__init__(master)
         self.coloring = coloring
         self.t = t
+        self.parameters = parameters
         self.draw_graph()
 
     def draw_graph(self):
@@ -25,11 +26,17 @@ class SolutionFrame(ttk.Frame):
             f"{instance.name or 'Custom'}, V={instance.v}, E={instance.e}",
             fontweight="bold",
         )
-        fig.text(22, 33, "ola oaa")
         ax = fig.add_subplot(111)
-        ax.set_title(
-            f"t={self.t:0.4f}s, init={self.coloring.heuristic_init}", fontsize=13
+        parameters_values = ", ".join(
+            [
+                f"{alias}={getattr(self.coloring, parameter)}"
+                for parameter, alias in self.parameters.items()
+            ]
         )
+        ax_title = (
+            f"k={self.coloring.solution[0]}, t={self.t:0.4f}s, {parameters_values}"
+        )
+        ax.set_title(ax_title, fontsize=13)
         v = self.coloring.g.v
         colors_map = {}
         node_colors = [None] * v
@@ -38,7 +45,6 @@ class SolutionFrame(ttk.Frame):
             if virtual_color not in colors_map:
                 colors_map[virtual_color] = np.random.rand(3)
             node_colors[i] = colors_map[virtual_color]
-        print(colors_map)
         nx.draw(graph, graph_pos, ax=ax, node_color=node_colors, node_size=400)
         if v <= 81:
             nx.draw_networkx_labels(

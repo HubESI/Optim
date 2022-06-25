@@ -192,7 +192,9 @@ class GenericTechniqueView(ttk.Frame):
             t = thread_results["time"]
             solution_window = Toplevel(self)
             solution_window.title(f"Solution de {instance.name or 'Custom'}")
-            solution_frame = SolutionFrame(solution_window, coloring, t)
+            solution_frame = SolutionFrame(
+                solution_window, coloring, t, self.parameters.get_aliases()
+            )
             solution_frame.pack(fill=BOTH, expand=1)
 
         thread_results = {}
