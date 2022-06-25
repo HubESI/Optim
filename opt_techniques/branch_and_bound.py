@@ -8,6 +8,7 @@ from .coloring import Coloring, Graph, timer
 class BranchAndBound(Coloring):
     def __init__(self, g: Graph, heuristic_init=True) -> None:
         super().__init__(g)
+        self.heuristic_init = heuristic_init
         if heuristic_init:
             self.greedy_coloring()
         else:

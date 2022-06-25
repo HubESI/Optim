@@ -1,12 +1,17 @@
 import multiprocessing
 import threading
-from tkinter import HORIZONTAL, LEFT, X, messagebox, ttk
+from tkinter import BOTH, HORIZONTAL, LEFT, Toplevel, X, messagebox, ttk
 
+import networkx as nx
+import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.figure import Figure
 from opt_techniques.graph import Graph
 
 from .adjacency_matrix import ConfigurableAdjacencyMatrix
-from .config import BASE_PADDING, BOLD_FONT, N_MAX
+from .config import BASE_PADDING, BOLD_FONT, N_MAX, SPRING_LAYOUT_SEED
 from .instance_choice import InstanceChoice
+from .solution_frame import SolutionFrame
 
 
 class GenericTechniqueView(ttk.Frame):
@@ -33,12 +38,15 @@ class GenericTechniqueView(ttk.Frame):
         def on_adj_matrix_select():
             self.conf_adj_matrix.enable()
             self.info_label.config(text="")
+            self.preview_btn.config(state="normal")
 
         def on_file_select():
             self.conf_adj_matrix.disable()
+            self.preview_btn.config(state="disabled")
 
         def on_successful_loading():
             self.info_label.config(text="")
+            self.preview_btn.config(state="normal")
 
         self.instance_choice = InstanceChoice(
             instance_choice_frame,
@@ -47,6 +55,12 @@ class GenericTechniqueView(ttk.Frame):
             on_successful_loading,
         )
         self.instance_choice.pack(pady=BASE_PADDING)
+        self.preview_btn = ttk.Button(
+            tweaks_frame,
+            text="Visualiser",
+            command=self.preview_graph,
+        )
+        self.preview_btn.pack(pady=BASE_PADDING)
         separator = ttk.Separator(tweaks_frame, orient=HORIZONTAL)
         separator.pack(fill=X, expand=1, pady=BASE_PADDING)
         if parameters_class:
@@ -69,31 +83,74 @@ class GenericTechniqueView(ttk.Frame):
         self.info_label = ttk.Label(solve_frame)
         self.info_label.pack(pady=BASE_PADDING)
 
-    def solve(self):
-        if self.instance_choice.is_file_selected():
-            instance = self.instance_choice.get_file_instance()
-            if instance is None:
-                self.info_label.config(foreground="red")
-                self.info_label.config(
-                    text="Veuillez sélectionner un fichier d'une instance"
+    def preview_graph(self):
+        preview = Toplevel(self)
+        instance = self.get_instance()
+        preview.title(f"Visualisation du graphe {instance.name or 'Custom'}")
+        adj_mat = np.array(instance.adj_mat)
+        graph = nx.from_numpy_array(adj_mat)
+        graph_pos = nx.spring_layout(graph, seed=SPRING_LAYOUT_SEED)
+
+        def draw_graph():
+            fig = Figure(figsize=(6, 5), dpi=100)
+            fig.suptitle(
+                f"{instance.name or 'Custom'}, V={instance.v}, E={instance.e}",
+                fontweight="bold",
+            )
+            ax = fig.add_subplot(111)
+            nx.draw(
+                graph,
+                graph_pos,
+                ax=ax,
+                node_size=400,
+                node_color="white",
+                edgecolors="black",
+            )
+            if len(adj_mat) <= 81:
+                nx.draw_networkx_labels(
+                    graph,
+                    graph_pos,
+                    {i: i + 1 for i in range(len(adj_mat))},
+                    font_weight="bold",
+                    ax=ax,
                 )
-                return
+            canvas = FigureCanvasTkAgg(fig, master=preview)
+            canvas.draw()
+            canvas.get_tk_widget().pack(fill=BOTH, expand=1)
+            toolbar = NavigationToolbar2Tk(canvas, preview)
+            toolbar.update()
+            canvas.get_tk_widget().pack(fill=BOTH, expand=1)
+
+        draw_graph()
+
+    def get_instance(self):
+        if self.instance_choice.is_file_selected():
+            return self.instance_choice.get_file_instance()
         else:
-            instance = Graph(self.conf_adj_matrix.get_matrix())
+            return Graph(self.conf_adj_matrix.get_matrix())
+
+    def solve(self):
+        instance = self.get_instance()
+        if instance is None:
+            self.info_label.config(foreground="red")
+            self.info_label.config(
+                text="Veuillez sélectionner un fichier d'une instance"
+            )
+            return
         coloring = self.coloring_class(instance, **self.parameters.get_kwargs())
 
-        def solve_thread_job():
-            def solve_process_job(coloring, attrs_needed, results):
+        def solve_thread_job(thread_results):
+            def solve_process_job(coloring, attrs_needed, process_results):
                 r = coloring.solve()
                 for attr in attrs_needed:
-                    results[attr] = getattr(coloring, attr)
-                results["time"] = r[1]
+                    process_results[attr] = getattr(coloring, attr)
+                process_results["time"] = r[1]
 
-            results = multiprocessing.Manager().dict()
+            process_results = multiprocessing.Manager().dict()
             attrs_needed = ["solution"]
             solve_process = multiprocessing.Process(
                 target=solve_process_job,
-                args=(coloring, attrs_needed, results),
+                args=(coloring, attrs_needed, process_results),
                 daemon=True,
             )
             killed = False
@@ -119,10 +176,23 @@ class GenericTechniqueView(ttk.Frame):
             self.instance_choice.enable()
             if not killed:
                 # open solutoin window
-                print(results["time"], results["solution"])
-                # after that
+                coloring.solution = process_results["solution"]
+                for r in process_results:
+                    thread_results[r] = process_results[r]
+                self.event_generate("<<EXECUTION_DONE>>", when="tail")
 
-        threading.Thread(target=solve_thread_job, daemon=True).start()
+        def open_solution_window(e):
+            t = thread_results["time"]
+            solution_window = Toplevel(self)
+            solution_window.title(f"Solution de {instance.name or 'Custom'}")
+            solution_frame = SolutionFrame(solution_window, coloring, t)
+            solution_frame.pack(fill=BOTH, expand=1)
+
+        thread_results = {}
+        self.bind("<<EXECUTION_DONE>>", open_solution_window)
+        threading.Thread(
+            target=solve_thread_job, args=(thread_results,), daemon=True
+        ).start()
         self.info_label.config(foreground="blue")
         self.info_label.config(
             text="L'algorithme est en cours d'exécution\nVous serez averti quand il se termine"

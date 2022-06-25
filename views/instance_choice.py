@@ -82,7 +82,8 @@ class InstanceChoice(ttk.Frame):
             info_str = "\n".join(textwrap.wrap(info_str, width=self.info_label_width))
             self.info_label.config(text=info_str)
             self.on_successful_loading()
-        except Exception:
+        except Exception as e:
+            print(e)
             self.file_instance = None
             self.info_label.config(foreground="red")
             self.info_label.config(text="Le fichier sélectionné est invalide")
@@ -95,4 +96,5 @@ class InstanceChoice(ttk.Frame):
     def enable(self):
         self.adj_matrix_choice.config(state="normal")
         self.file_choice.config(state="normal")
-        self.import_btn.config(state="normal")
+        if self.is_file_selected():
+            self.import_btn.config(state="normal")
