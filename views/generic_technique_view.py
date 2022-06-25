@@ -43,13 +43,13 @@ class GenericTechniqueView(ttk.Frame):
 
         def on_adj_matrix_select():
             self.conf_adj_matrix.enable()
-            self.info_label["text"] = ""
+            self.info_label.config(text="")
 
         def on_file_select():
             self.conf_adj_matrix.disable()
 
         def on_successful_loading():
-            self.info_label["text"] = ""
+            self.info_label.config(text="")
 
         self.instance_choice = InstanceChoice(
             self, on_adj_matrix_select, on_file_select, on_successful_loading
@@ -80,9 +80,9 @@ class GenericTechniqueView(ttk.Frame):
             instance = self.instance_choice.get_file_instance()
             if instance is None:
                 self.info_label.config(foreground="red")
-                self.info_label[
-                    "text"
-                ] = "Veuillez sélectionner un fichier d'une instance"
+                self.info_label.config(
+                    text="Veuillez sélectionner un fichier d'une instance"
+                )
                 return
         else:
             instance = Graph(self.conf_adj_matrix.get_matrix())

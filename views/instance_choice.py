@@ -21,7 +21,7 @@ class InstanceChoice(ttk.Frame):
         def on_adj_matrix_select_wrapper():
             on_adj_matrix_select()
             self.file_instance = None
-            self.info_label["text"] = ""
+            self.info_label.config(text="")
             self.import_btn.config(state="disabled")
 
         def on_file_select_wrapper():
@@ -80,12 +80,12 @@ class InstanceChoice(ttk.Frame):
                 f'Instance chargée avec succès depuis le fichier "{instance_name}"'
             )
             info_str = "\n".join(textwrap.wrap(info_str, width=self.info_label_width))
-            self.info_label["text"] = info_str
+            self.info_label.config(text=info_str)
             self.on_successful_loading()
         except Exception:
             self.file_instance = None
             self.info_label.config(foreground="red")
-            self.info_label["text"] = "Le fichier sélectionné est invalide"
+            self.info_label.config(text="Le fichier sélectionné est invalide")
 
     def disable(self):
         self.adj_matrix_choice.config(state="disabled")

@@ -95,9 +95,9 @@ class AdjacencyMatrix(ttk.Frame):
                     self.cells[j][i].delete(0, END)
                     self.cells[j][i].insert(0, v)
                     self.cells[j][i].config(validate="key")
-                self.error_label["text"] = ""
+                self.error_label.config(text="")
                 return True
-            self.error_label["text"] = "Veuillez entrer 0 ou 1"
+            self.error_label.config(text="Veuillez entrer 0 ou 1")
             return False
 
         vcmd = self.register(validator_wrapper)
