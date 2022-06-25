@@ -3,12 +3,15 @@ from .config import BASE_PADDING
 
 
 class BnBParameters(ttk.Frame):
+    parameters_width = 35
+
     def __init__(self, master):
         super().__init__(master)
         self.heuristic_init = BooleanVar(self, True)
         self.heuristic_init_chkbtn = ttk.Checkbutton(
             self,
-            text="Initialiser la meilleure solution avec\nune heuristique",
+            text="Initialiser la meilleure solution avec une\nheuristique",
+            width=self.parameters_width,
             variable=self.heuristic_init,
             onvalue=True,
             offvalue=False,
