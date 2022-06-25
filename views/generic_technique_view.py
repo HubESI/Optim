@@ -70,7 +70,6 @@ class GenericTechniqueView(ttk.Frame):
         self.info_label.pack(pady=BASE_PADDING)
 
     def solve(self):
-        print(self.master.winfo_width(), self.master.winfo_height())
         if self.instance_choice.is_file_selected():
             instance = self.instance_choice.get_file_instance()
             if instance is None:
@@ -84,35 +83,44 @@ class GenericTechniqueView(ttk.Frame):
         coloring = self.coloring_class(instance, **self.parameters.get_kwargs())
 
         def solve_thread_job():
-            def solve_process_job(results):
+            def solve_process_job(coloring, attrs_needed, results):
                 r = coloring.solve()
-                results.extend(r)
+                for attr in attrs_needed:
+                    results[attr] = getattr(coloring, attr)
+                results["time"] = r[1]
 
-            results = multiprocessing.Manager().list()
+            results = multiprocessing.Manager().dict()
+            attrs_needed = ["solution"]
             solve_process = multiprocessing.Process(
-                target=solve_process_job, args=(results,), daemon=True
+                target=solve_process_job,
+                args=(coloring, attrs_needed, results),
+                daemon=True,
             )
-            info_message = "L'exécution est terminée"
+            killed = False
 
             def kill_solve_process():
-                nonlocal info_message
+                nonlocal killed
                 solve_process.kill()
-                info_message = "L'exécution a été arrêtée"
+                killed = True
 
             solve_process.start()
             self.parameters.disable()
             self.instance_choice.disable()
             self.solve_btn.config(text="Arrêter", command=kill_solve_process)
             solve_process.join()
+            if killed:
+                info_message = "L'exécution a été arrêtée"
+            else:
+                info_message = "L'exécution est terminée"
             messagebox.showinfo(parent=self, title="Notification", message=info_message)
             self.info_label.config(text="")
             self.solve_btn.config(text="Exécuter", command=self.solve)
-            # open solutoin window
-            t = results[1]
-            print(t, coloring.solution)
-            # after that
             self.parameters.enable()
             self.instance_choice.enable()
+            if not killed:
+                # open solutoin window
+                print(results["time"], results["solution"])
+                # after that
 
         threading.Thread(target=solve_thread_job, daemon=True).start()
         self.info_label.config(foreground="blue")
