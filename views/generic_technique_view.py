@@ -16,8 +16,9 @@ from .solution_frame import SolutionFrame
 
 
 class GenericTechniqueView(ttk.Frame):
-    def __init__(self, master, coloring_class, parameters_class=None):
+    def __init__(self, master, technique_name, coloring_class, parameters_class=None):
         super().__init__(master)
+        self.technique_name = technique_name
         self.coloring_class = coloring_class
         adj_matrix_frame = ttk.Frame(self)
         adj_matrix_frame.pack(side=LEFT, padx=BASE_PADDING, pady=BASE_PADDING)
@@ -209,9 +210,15 @@ class GenericTechniqueView(ttk.Frame):
         def open_solution_window(e):
             t = thread_results["time"]
             solution_window = Toplevel(self)
-            solution_window.title(f"Solution de {instance.name or 'Custom'}")
+            solution_window.title(
+                f"{instance.name or 'Custom'} avec {self.technique_name}"
+            )
             solution_frame = SolutionFrame(
-                solution_window, coloring, t, self.parameters.get_aliases()
+                solution_window,
+                self.technique_name,
+                coloring,
+                t,
+                self.parameters.get_aliases(),
             )
             solution_frame.pack(fill=BOTH, expand=1)
 

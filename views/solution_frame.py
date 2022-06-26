@@ -1,17 +1,17 @@
 from tkinter import BOTH, ttk
 
-import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 
-from .config import SPRING_LAYOUT_SEED
+from .config import SPRING_LAYOUT_SEED, BASE_PADDING
 
 
 class SolutionFrame(ttk.Frame):
-    def __init__(self, master, coloring, t, parameters=None):
+    def __init__(self, master, technique_name, coloring, t, parameters=None):
         super().__init__(master)
+        self.technique_name = technique_name
         self.coloring = coloring
         self.t = t
         self.parameters = parameters
@@ -20,7 +20,7 @@ class SolutionFrame(ttk.Frame):
     def draw_graph(self):
         graph = nx.from_numpy_array(np.array(self.coloring.adj_mat))
         graph_pos = nx.spring_layout(graph, seed=SPRING_LAYOUT_SEED)
-        fig = Figure(figsize=(6, 5), dpi=100)
+        fig = Figure(figsize=(7.5, 6), dpi=100)
         instance = self.coloring.g
         fig.suptitle(
             f"{instance.name or 'Custom'}, V={instance.v}, E={instance.e}",
@@ -33,9 +33,7 @@ class SolutionFrame(ttk.Frame):
                 for parameter, alias in self.parameters.items()
             ]
         )
-        ax_title = (
-            f"k={self.coloring.solution[0]}, t={self.t:0.4f}s, {parameters_values}"
-        )
+        ax_title = f"{self.technique_name}k={self.coloring.solution[0]}, t={self.t:0.4f}s\n{parameters_values}"
         ax.set_title(ax_title, fontsize=13)
         v = self.coloring.g.v
         colors_map = {}

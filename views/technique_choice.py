@@ -82,6 +82,6 @@ class TechniqueChoice(ttk.Frame):
         window.protocol("WM_DELETE_WINDOW", on_closing)
         window.resizable(False, False)
         window.title(name)
-        GenericTechniqueView(window, coloring_class, parameters_class).pack(
+        GenericTechniqueView(window, name, coloring_class, parameters_class).pack(
             padx=BASE_PADDING, pady=BASE_PADDING
         )
