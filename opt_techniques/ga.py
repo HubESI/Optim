@@ -1,9 +1,9 @@
 import random
 import sys
 
-from coloring import Coloring, Graph, timer
-from ga_concepts.individual import Individual
-from ga_concepts.population import Population
+from .coloring import Coloring, Graph, timer
+from .ga_concepts.individual import Individual
+from .ga_concepts.population import Population
 
 CONFLICT_PENALTY = 10
 

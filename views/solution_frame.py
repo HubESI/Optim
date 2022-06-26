@@ -41,7 +41,10 @@ class SolutionFrame(ttk.Frame):
         )
 
         def get_parameter_value(parameter):
-            if parameter in self.parameters_values_aliases:
+            if (
+                self.parameters_values_aliases
+                and parameter in self.parameters_values_aliases
+            ):
                 return self.parameters_values_aliases[parameter]
             else:
                 return getattr(self.coloring, parameter)

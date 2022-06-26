@@ -21,8 +21,11 @@ class BnBParameters(ttk.Frame):
     def get_kwargs(self):
         return {"heuristic_init": self.heuristic_init.get()}
 
-    def get_aliases(self):
+    def parameters_names_aliases(self):
         return {"heuristic_init": "init"}
+
+    def parameters_values_aliases(self):
+        return {"heuristic_init": "vrai"}
 
     def disable(self):
         self.heuristic_init_chkbtn.config(state="disabled")

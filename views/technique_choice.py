@@ -2,10 +2,12 @@ from tkinter import Toplevel, messagebox, ttk
 
 from opt_techniques.branch_and_bound import BranchAndBound
 from opt_techniques.coloring import Coloring
+from opt_techniques.ga import GA
 from opt_techniques.heuristic import Heuristic
 
-from .bnb_parameters import BnBParameters
 from .bnb_heuristics_parameters import BnBHeuristicsParameters
+from .bnb_parameters import BnBParameters
+from .ga_parameters import GAParameters
 from .config import BASE_PADDING, BOLD_FONT
 from .generic_technique_view import GenericTechniqueView
 
@@ -61,7 +63,15 @@ class TechniqueChoice(ttk.Frame):
         metaheuristics_label.pack(padx=BASE_PADDING, pady=BASE_PADDING)
         rs = ttk.Button(self, text="Recuit simulé", width=self.button_width)
         rs.pack(pady=BASE_PADDING, padx=BASE_PADDING)
-        ag = ttk.Button(self, text="Algorithme génétique", width=self.button_width)
+        self.ag_window = self.TechniqueWindow(
+            self, "Algorithme Génétique", GA, GAParameters
+        )
+        ag = ttk.Button(
+            self,
+            text="Algorithme génétique",
+            width=self.button_width,
+            command=self.ag_window.open,
+        )
         ag.pack(pady=BASE_PADDING, padx=BASE_PADDING)
         separator3 = ttk.Separator(self, orient="horizontal")
         separator3.pack(padx=BASE_PADDING, pady=3 * BASE_PADDING, fill="x")
