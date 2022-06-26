@@ -78,7 +78,7 @@ class VDWOAParameters(ttk.Frame):
         self.max_iter = self.LabeledEntry(
             self,
             "Max itérations",
-            "80",
+            "50",
             self.size_transformer,
             self.is_size,
             on_valid_size,

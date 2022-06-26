@@ -145,11 +145,11 @@ class VDWOA(Coloring):
         self,
         g: Graph,
         num_whales: int = 20,
-        max_iter: int = 80,
-        max_stag=25,
+        max_iter: int = 50,
+        max_stag=5,
         conflict_penalty=10,
         epsilon=0.5,
-        vns_iteration=30,
+        vns_iteration=40,
     ):
         super().__init__(g)
         self.graphe = np.array(g.adj_mat)
