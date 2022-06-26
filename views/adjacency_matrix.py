@@ -1,4 +1,4 @@
-from random import randint
+from random import random
 from tkinter import CENTER, END, ttk
 
 from .config import BASE_PADDING
@@ -34,21 +34,48 @@ class AdjacencyMatrixTweaks(ttk.Frame):
             self, lambda e: adj_matrix.set_n(self.n_combo.get_val())
         )
         self.n_combo.grid(row=0, column=0, padx=BASE_PADDING, pady=BASE_PADDING)
+        vcmd = (self.register(self.is_rate), "%P")
+        self.density = ttk.Entry(self, justify=CENTER, width=5)
+        self.density.insert(0, "0.5")
+        self.density.config(
+            validate="key",
+            validatecommand=vcmd,
+        )
         self.fill_random_btn = ttk.Button(
-            self, text="Générer aléa", command=adj_matrix.fill_random
+            self,
+            text="Générer aléa",
+            command=lambda: adj_matrix.fill_random(self.get_density()),
         )
         self.fill_random_btn.grid(row=0, column=1, padx=BASE_PADDING, pady=BASE_PADDING)
+        self.density.grid(row=0, column=2, padx=BASE_PADDING, pady=BASE_PADDING)
         self.clear_btn = ttk.Button(self, text="Effacer", command=adj_matrix.clear)
-        self.clear_btn.grid(row=0, column=2, padx=BASE_PADDING, pady=BASE_PADDING)
+        self.clear_btn.grid(row=0, column=3, padx=BASE_PADDING, pady=BASE_PADDING)
+
+    def get_density(self):
+        v = float(self.density.get())
+        return float(v) if v else 0
+
+    @staticmethod
+    def is_rate(v):
+        if v == "":
+            return True
+        try:
+            rate = float(v)
+            assert rate >= 0 and rate <= 1
+        except (ValueError, AssertionError):
+            return False
+        return True
 
     def disable(self):
         self.n_combo.disable()
         self.fill_random_btn.config(state="disabled")
+        self.density.config(state="disabled")
         self.clear_btn.config(state="disabled")
 
     def enable(self):
         self.n_combo.enable()
         self.fill_random_btn.config(state="normal")
+        self.density.config(state="normal")
         self.clear_btn.config(state="normal")
 
     class NCombobox(ttk.Frame):
@@ -173,13 +200,16 @@ class AdjacencyMatrix(ttk.Frame):
                     self.cells[i][j].config(state="normal")
                     self.cells[j][i].config(state="normal")
 
-    def fill_random(self):
+    def fill_random(self, density):
         for i in range(0, self.n):
             for j in range(i, self.n):
                 if i != j:
                     self.cells[i][j].delete(0, END)
-                    r = randint(0, 1)
-                    self.cells[i][j].insert(0, str(r))
+                    r = random()
+                    if r < density:
+                        self.cells[i][j].insert(0, "1")
+                    else:
+                        self.cells[i][j].insert(0, "0")
 
     def clear(self):
         for i in range(self.n):
