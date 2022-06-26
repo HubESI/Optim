@@ -4,6 +4,7 @@ from opt_techniques.branch_and_bound import BranchAndBound
 from opt_techniques.coloring import Coloring
 from opt_techniques.ga import GA
 from opt_techniques.heuristic import Heuristic
+from opt_techniques.vdwoa import VDWOA
 
 from .bnb_heuristics_parameters import BnBHeuristicsParameters
 from .bnb_parameters import BnBParameters
@@ -12,6 +13,8 @@ from .ga_parameters import GAParameters
 from .ga_solution import GASolution
 from .generic_technique_view import GenericTechniqueView
 from .solution_frame import SolutionFrame
+from .vdwa_parameters import VDWOAParameters
+from .vdwoa_solution import VDWOASolution
 
 
 class TechniqueChoice(ttk.Frame):
@@ -65,14 +68,14 @@ class TechniqueChoice(ttk.Frame):
         metaheuristics_label.pack(padx=BASE_PADDING, pady=BASE_PADDING)
         rs = ttk.Button(self, text="Recuit simulé", width=self.button_width)
         rs.pack(pady=BASE_PADDING, padx=BASE_PADDING)
-        self.ga_window = self.TechniqueWindow(
+        ga_window = self.TechniqueWindow(
             self, "Algorithme Génétique", GA, GAParameters, solution_class=GASolution
         )
         ga = ttk.Button(
             self,
             text="Algorithme génétique",
             width=self.button_width,
-            command=self.ga_window.open,
+            command=ga_window.open,
         )
         ga.pack(pady=BASE_PADDING, padx=BASE_PADDING)
         separator3 = ttk.Separator(self, orient="horizontal")
@@ -81,8 +84,11 @@ class TechniqueChoice(ttk.Frame):
             self, text="Nouvelle métaheuristique", font=BOLD_FONT
         )
         new_metaheuristics_label.pack(padx=BASE_PADDING, pady=BASE_PADDING)
+        ga_window = self.TechniqueWindow(
+            self, "VDWOA", VDWOA, VDWOAParameters, solution_class=VDWOASolution
+        )
         woa = ttk.Button(
-            self, text="The Whale Optimization Algorithm", width=self.button_width
+            self, text="VDWOA", width=self.button_width, command=ga_window.open
         )
         woa.pack(padx=BASE_PADDING, pady=BASE_PADDING)
 
