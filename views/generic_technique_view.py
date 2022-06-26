@@ -180,16 +180,19 @@ class GenericTechniqueView(ttk.Frame):
             coloring = self.coloring_class(instance, **self.parameters.get_kwargs())
 
         def solve_thread_job(thread_results):
-            def solve_process_job(coloring, attrs_needed, process_results):
+            def solve_process_job(
+                coloring, attrs_needed, coloring_updates, process_results
+            ):
                 r = coloring.solve()
                 for attr in attrs_needed:
-                    process_results[attr] = getattr(coloring, attr)
-                process_results["time"] = r[1]
+                    coloring_updates[attr] = getattr(coloring, attr)
+                process_results["execution_info"] = r
 
+            coloring_updates = multiprocessing.Manager().dict()
             process_results = multiprocessing.Manager().dict()
             solve_process = multiprocessing.Process(
                 target=solve_process_job,
-                args=(coloring, self.attrs_needed, process_results),
+                args=(coloring, self.attrs_needed, coloring_updates, process_results),
                 daemon=True,
             )
             killed = False
@@ -217,13 +220,13 @@ class GenericTechniqueView(ttk.Frame):
             self.instance_choice.enable()
             if not killed:
                 # open solutoin window
-                coloring.solution = process_results["solution"]
-                for r in process_results:
-                    thread_results[r] = process_results[r]
+                # coloring.solution = process_results["solution"]
+                for u in coloring_updates:
+                    setattr(coloring, u, coloring_updates[u])
+                thread_results["execution_info"] = process_results["execution_info"]
                 self.event_generate("<<EXECUTION_DONE>>", when="tail")
 
         def open_solution_window(e):
-            t = thread_results["time"]
             solution_window = Toplevel(self)
             solution_window.title(
                 f"{instance.name or 'Custom'} avec {self.technique_name}"
@@ -233,14 +236,14 @@ class GenericTechniqueView(ttk.Frame):
                     solution_window,
                     self.technique_name,
                     coloring,
-                    t,
+                    thread_results,
                 )
             else:
                 solution_frame = self.solution_class(
                     solution_window,
                     self.technique_name,
                     coloring,
-                    t,
+                    thread_results,
                     self.parameters.parameters_names_aliases(),
                     self.parameters.parameters_values_aliases(),
                 )

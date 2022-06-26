@@ -65,7 +65,7 @@ class GA(Coloring):
             nb_solutions.append(len(gen.valid_solutions))
             avgs_fitness.append(gen.total_fitness / self.population_size)
             gen_count += 1
-        return avgs_nb_conflicts, avgs_nb_colors, nb_solutions, avgs_fitness
+        return avgs_fitness
 
 
 if __name__ == "__main__":

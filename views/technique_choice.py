@@ -11,6 +11,7 @@ from .config import BASE_PADDING, BOLD_FONT
 from .ga_parameters import GAParameters
 from .generic_technique_view import GenericTechniqueView
 from .solution_frame import SolutionFrame
+from .ga_solution import GASolution
 
 
 class TechniqueChoice(ttk.Frame):
@@ -64,16 +65,16 @@ class TechniqueChoice(ttk.Frame):
         metaheuristics_label.pack(padx=BASE_PADDING, pady=BASE_PADDING)
         rs = ttk.Button(self, text="Recuit simulé", width=self.button_width)
         rs.pack(pady=BASE_PADDING, padx=BASE_PADDING)
-        self.ag_window = self.TechniqueWindow(
-            self, "Algorithme Génétique", GA, GAParameters
+        self.ga_window = self.TechniqueWindow(
+            self, "Algorithme Génétique", GA, GAParameters, solution_class=GASolution
         )
-        ag = ttk.Button(
+        ga = ttk.Button(
             self,
             text="Algorithme génétique",
             width=self.button_width,
-            command=self.ag_window.open,
+            command=self.ga_window.open,
         )
-        ag.pack(pady=BASE_PADDING, padx=BASE_PADDING)
+        ga.pack(pady=BASE_PADDING, padx=BASE_PADDING)
         separator3 = ttk.Separator(self, orient="horizontal")
         separator3.pack(padx=BASE_PADDING, pady=3 * BASE_PADDING, fill="x")
         new_metaheuristics_label = ttk.Label(

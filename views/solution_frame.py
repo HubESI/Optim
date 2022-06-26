@@ -14,14 +14,14 @@ class SolutionFrame(ttk.Frame):
         master,
         technique_name,
         coloring,
-        t,
+        results,
         parameters=None,
         parameters_values_aliases=None,
     ):
         super().__init__(master)
         self.technique_name = technique_name
         self.coloring = coloring
-        self.t = t
+        self.results = results
         self.parameters = parameters
         self.parameters_values_aliases = parameters_values_aliases
         self.draw_graph()
@@ -36,8 +36,9 @@ class SolutionFrame(ttk.Frame):
             fontweight="bold",
         )
         ax = fig.add_subplot(111)
+        t = self.results["execution_info"][1]
         solution_info = (
-            f"{self.technique_name} k ={self.coloring.solution[0]}, t={self.t:0.4f}s"
+            f"{self.technique_name} k ={self.coloring.solution[0]}, t={t:0.4f}s"
         )
 
         def get_parameter_value(parameter):
