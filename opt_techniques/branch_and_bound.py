@@ -2,13 +2,17 @@ import sys
 from collections import deque
 from typing import List, Set
 
-from coloring import Coloring, Graph, timer
+from .coloring import Coloring, Graph, timer
 
 
 class BranchAndBound(Coloring):
-    def __init__(self, g: Graph) -> None:
+    def __init__(self, g: Graph, heuristic_init=True) -> None:
         super().__init__(g)
-        self.greedy_coloring()
+        self.heuristic_init = heuristic_init
+        if heuristic_init:
+            self.greedy_coloring()
+        else:
+            self.solution = (self.g.order, list(range(1, self.g.order + 1)))
 
     def create_node(
         self, vertex: int, state: List[int], newest_color: int, eval: int

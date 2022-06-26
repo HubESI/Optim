@@ -1,9 +1,8 @@
 import sys
 import time
-from abc import abstractmethod
 from typing import Any, Callable, List, Tuple
 
-from graph import Graph
+from .graph import Graph
 
 
 def timer(func: Callable) -> Callable[..., Tuple[Any, float]]:
@@ -25,9 +24,9 @@ class Coloring:
     def adj_mat(self) -> List[List[bool]]:
         return self.g.adj_mat
 
-    @abstractmethod
+    @timer
     def solve(self) -> None:
-        pass
+        self.greedy_coloring()
 
     @timer
     def greedy_coloring(self) -> None:

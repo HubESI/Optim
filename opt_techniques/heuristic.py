@@ -1,10 +1,9 @@
-from multiprocessing.sharedctypes import Value
 import sys
 from functools import total_ordering
 from queue import PriorityQueue
 from typing import Callable, List, Set
 
-from coloring import Coloring, Graph, timer
+from .coloring import Coloring, Graph, timer
 
 
 class Heuristic(Coloring):
