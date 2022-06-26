@@ -48,9 +48,9 @@ class GASolution(ttk.Frame):
         ax = fig.add_subplot(111)
         avgs_fitness = self.results["execution_info"][0]
         ax.plot(x, avgs_fitness)
-        ax.set_title(self.coloring.g.name, fontsize=13 or "Custom")
-        ax.set_xlabel("Génération")
-        ax.set_ylabel("Fitness moyenne")
+        ax.set_title(self.coloring.g.name or "Custom", fontsize=13)
+        ax.set_xlabel("Génération", fontsize=12)
+        ax.set_ylabel("Fitness moyenne", fontsize=12)
         canvas = FigureCanvasTkAgg(fig, master=self.convergence_tab)
         canvas.draw()
         canvas.get_tk_widget().pack(fill=BOTH, expand=1)
