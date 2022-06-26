@@ -9,9 +9,9 @@ from .bnb_heuristics_parameters import BnBHeuristicsParameters
 from .bnb_parameters import BnBParameters
 from .config import BASE_PADDING, BOLD_FONT
 from .ga_parameters import GAParameters
+from .ga_solution import GASolution
 from .generic_technique_view import GenericTechniqueView
 from .solution_frame import SolutionFrame
-from .ga_solution import GASolution
 
 
 class TechniqueChoice(ttk.Frame):
