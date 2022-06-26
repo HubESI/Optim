@@ -2,14 +2,11 @@ import math
 import random
 import sys
 from copy import copy
-from turtle import position
 from typing import Tuple
 
 import numpy as np
 
-from coloring import Coloring, Graph, timer
-
-CONFLICT_PENALTY = 10
+from .coloring import Coloring, Graph, timer
 
 
 # Les Adjacents d'un Noeud
@@ -143,24 +140,27 @@ class whale:
         self.conflicts = conflicts
 
 
-class WOA(Coloring):
+class VDWOA(Coloring):
     def __init__(
         self,
         g: Graph,
-        nb_search_agents: int = 30,
-        max_iter: int = 100,
+        num_whales: int = 20,
+        max_iter: int = 80,
+        max_stag=25,
+        conflict_penalty=10,
         epsilon=0.5,
-        vns_iteration=65,
+        vns_iteration=30,
     ):
         super().__init__(g)
         self.graphe = np.array(g.adj_mat)
         self.greedy_coloring()
         self.bound = self.solution[0]
         self.dim = self.g.order
-        self.nb_search_agents = nb_search_agents
+        self.num_whales = num_whales
         self.fitness = fitness_colors
-        self.conflict_penalty = CONFLICT_PENALTY
+        self.conflict_penalty = conflict_penalty
         self.max_iter = max_iter
+        self.max_stag = max_stag
         self.epsilon = epsilon
         self.vns_iteration = vns_iteration
         self.leader_pos = None
@@ -177,15 +177,23 @@ class WOA(Coloring):
 
         # create n random whales
         whalePopulation = [
-            whale(self.fitness, self.dim, 0, self.dim, i, self.graphe, CONFLICT_PENALTY)
-            for i in range(self.nb_search_agents)
+            whale(
+                self.fitness,
+                self.dim,
+                0,
+                self.dim,
+                i,
+                self.graphe,
+                self.conflict_penalty,
+            )
+            for i in range(self.num_whales)
         ]
 
         # compute the value of best_position and best_fitness in the whale Population
         Xbest = [0.0 for i in range(self.dim)]
         Fbest = sys.float_info.max
 
-        for i in range(self.nb_search_agents):  # check each whale
+        for i in range(self.num_whales):  # check each whale
             if whalePopulation[i].fitness < Fbest:
                 Fbest = whalePopulation[i].fitness
                 Xbest = copy(whalePopulation[i].position)
@@ -193,6 +201,7 @@ class WOA(Coloring):
 
         # main loop of woa
         Iter = 0
+        stag = 0
         while Iter < self.max_iter:
 
             # after every 10 iterations
@@ -204,7 +213,7 @@ class WOA(Coloring):
             a = 2 * (1 - Iter / self.max_iter)
             a2 = -1 + Iter * ((-1) / self.max_iter)
 
-            for i in range(self.nb_search_agents):
+            for i in range(self.num_whales):
                 r = rnd.random()
                 A = 2 * a * rnd.random() - a
                 C = 2 * rnd.random()
@@ -238,9 +247,9 @@ class WOA(Coloring):
                                         Xnew[j] = self.dim - 1
                         else:
                             # eq 12 :  X(t+1) = Xrand - wi * A * D
-                            p = random.randint(0, self.nb_search_agents - 1)
+                            p = random.randint(0, self.num_whales - 1)
                             while p == i:
-                                p = random.randint(0, self.nb_search_agents - 1)
+                                p = random.randint(0, self.num_whales - 1)
                             Xrand = whalePopulation[p].position
                             for j in range(self.dim):
                                 D[j] = abs(
@@ -283,8 +292,8 @@ class WOA(Coloring):
 
                 for j in range(self.dim):
                     whalePopulation[i].position[j] = Xnew[j]
-
-            for i in range(self.nb_search_agents):
+            FbestOld = Fbest
+            for i in range(self.num_whales):
                 # if Xnew < minx OR Xnew > maxx
                 # then clip it
                 for j in range(self.dim):
@@ -294,7 +303,6 @@ class WOA(Coloring):
                     whalePopulation[i].position[j] = min(
                         whalePopulation[i].position[j], self.dim
                     )
-
                 whalePopulation[i].fitness, whalePopulation[i].conflicts = self.fitness(
                     whalePopulation[i].graphe,
                     whalePopulation[i].position,
@@ -305,23 +313,28 @@ class WOA(Coloring):
                     Xbest = copy(whalePopulation[i].position)
                     Fbest = whalePopulation[i].fitness
                     Fconflicts = whalePopulation[i].conflicts
-
             bestAgents[Iter] = Fbest
             nb_conflicts[Iter] = Fconflicts
             Iter += 1
+            if FbestOld <= Fbest:
+                stag += 1
+                if stag == self.max_stag:
+                    break
+            else:
+                stag = 0
         # end-while
 
         # returning the best solution
         self.solution = (Fbest, list(map(int, Xbest)))
-        return bestAgents, nb_conflicts
+        return Iter - 1, bestAgents, nb_conflicts
 
 
 if __name__ == "__main__":
-    g = Graph.from_file("instances/myciel4.col")
-    col = WOA(g)
+    g = Graph.from_file("opt_techniques/instances/myciel4.col")
+    col = VDWOA(g)
     r = col.solve()
     t = r[1]
     col.to_file(
-        "instances/myciel4.col.vdwoa.sol",
+        "opt_techniques/instances/myciel4.col.vdwoa.sol",
         method_time_info=f"VDWA {t:0.6f} seconds",
     )
