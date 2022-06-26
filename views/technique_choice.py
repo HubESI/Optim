@@ -2,8 +2,10 @@ from tkinter import Toplevel, messagebox, ttk
 
 from opt_techniques.branch_and_bound import BranchAndBound
 from opt_techniques.coloring import Coloring
+from opt_techniques.heuristic import Heuristic
 
 from .bnb_parameters import BnBParameters
+from .bnb_heuristics_parameters import BnBHeuristicsParameters
 from .config import BASE_PADDING, BOLD_FONT
 from .generic_technique_view import GenericTechniqueView
 
@@ -33,10 +35,14 @@ class TechniqueChoice(ttk.Frame):
         separator1.pack(padx=BASE_PADDING, pady=3 * BASE_PADDING, fill="x")
         heuristics_label = ttk.Label(self, text="Heuristiques", font=BOLD_FONT)
         heuristics_label.pack(padx=BASE_PADDING, pady=BASE_PADDING)
+        self.bnb_heuristics_window = self.TechniqueWindow(
+            self, "Heuristiques BnB", Heuristic, BnBHeuristicsParameters
+        )
         bnb_heuristics = ttk.Button(
             self,
             text="Heuristiques basées sur Branch and Bound",
             width=self.button_width,
+            command=self.bnb_heuristics_window.open,
         )
         bnb_heuristics.pack(pady=BASE_PADDING, padx=BASE_PADDING)
         self.welsh_powell_window = self.TechniqueWindow(

@@ -232,7 +232,8 @@ class GenericTechniqueView(ttk.Frame):
                     self.technique_name,
                     coloring,
                     t,
-                    self.parameters.get_aliases(),
+                    self.parameters.parameters_names_aliases(),
+                    self.parameters.parameters_values_aliases(),
                 )
             solution_frame.pack(fill=BOTH, expand=1)
 

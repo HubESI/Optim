@@ -5,16 +5,25 @@ import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 
-from .config import SPRING_LAYOUT_SEED, BASE_PADDING
+from .config import SPRING_LAYOUT_SEED
 
 
 class SolutionFrame(ttk.Frame):
-    def __init__(self, master, technique_name, coloring, t, parameters=None):
+    def __init__(
+        self,
+        master,
+        technique_name,
+        coloring,
+        t,
+        parameters=None,
+        parameters_values_aliases=None,
+    ):
         super().__init__(master)
         self.technique_name = technique_name
         self.coloring = coloring
         self.t = t
         self.parameters = parameters
+        self.parameters_values_aliases = parameters_values_aliases
         self.draw_graph()
 
     def draw_graph(self):
@@ -30,10 +39,17 @@ class SolutionFrame(ttk.Frame):
         solution_info = (
             f"{self.technique_name} k ={self.coloring.solution[0]}, t={self.t:0.4f}s"
         )
+
+        def get_parameter_value(parameter):
+            if parameter in self.parameters_values_aliases:
+                return self.parameters_values_aliases[parameter]
+            else:
+                return getattr(self.coloring, parameter)
+
         if self.parameters:
             parameters_values = ", ".join(
                 [
-                    f"{alias}={getattr(self.coloring, parameter)}"
+                    f"{alias}={get_parameter_value(parameter)}"
                     for parameter, alias in self.parameters.items()
                 ]
             )
