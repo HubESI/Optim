@@ -66,6 +66,7 @@ class GenericTechniqueView(ttk.Frame):
         self.preview_btn.pack(pady=BASE_PADDING)
         separator = ttk.Separator(tweaks_frame, orient=HORIZONTAL)
         separator.pack(fill=X, expand=1, pady=BASE_PADDING)
+        self.parameters = None
         if parameters_class:
             technique_parameters_frame = ttk.Frame(tweaks_frame)
             technique_parameters_frame.pack(pady=BASE_PADDING)
@@ -163,7 +164,10 @@ class GenericTechniqueView(ttk.Frame):
                 text="Veuillez sélectionner un fichier d'une instance"
             )
             return
-        coloring = self.coloring_class(instance, **self.parameters.get_kwargs())
+        if self.parameters is None:
+            coloring = self.coloring_class(instance)
+        else:
+            coloring = self.coloring_class(instance, **self.parameters.get_kwargs())
 
         def solve_thread_job(thread_results):
             def solve_process_job(coloring, attrs_needed, process_results):
@@ -187,7 +191,8 @@ class GenericTechniqueView(ttk.Frame):
                 killed = True
 
             solve_process.start()
-            self.parameters.disable()
+            if self.parameters:
+                self.parameters.disable()
             self.instance_choice.disable()
             self.solve_btn.config(text="Arrêter", command=kill_solve_process)
             solve_process.join()
@@ -198,7 +203,8 @@ class GenericTechniqueView(ttk.Frame):
             messagebox.showinfo(parent=self, title="Notification", message=info_message)
             self.info_label.config(text="")
             self.solve_btn.config(text="Exécuter", command=self.solve)
-            self.parameters.enable()
+            if self.parameters:
+                self.parameters.enable()
             self.instance_choice.enable()
             if not killed:
                 # open solutoin window
@@ -213,13 +219,21 @@ class GenericTechniqueView(ttk.Frame):
             solution_window.title(
                 f"{instance.name or 'Custom'} avec {self.technique_name}"
             )
-            solution_frame = SolutionFrame(
-                solution_window,
-                self.technique_name,
-                coloring,
-                t,
-                self.parameters.get_aliases(),
-            )
+            if self.parameters is None:
+                solution_frame = SolutionFrame(
+                    solution_window,
+                    self.technique_name,
+                    coloring,
+                    t,
+                )
+            else:
+                solution_frame = SolutionFrame(
+                    solution_window,
+                    self.technique_name,
+                    coloring,
+                    t,
+                    self.parameters.get_aliases(),
+                )
             solution_frame.pack(fill=BOTH, expand=1)
 
         thread_results = {}

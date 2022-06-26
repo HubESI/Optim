@@ -27,13 +27,19 @@ class SolutionFrame(ttk.Frame):
             fontweight="bold",
         )
         ax = fig.add_subplot(111)
-        parameters_values = ", ".join(
-            [
-                f"{alias}={getattr(self.coloring, parameter)}"
-                for parameter, alias in self.parameters.items()
-            ]
+        solution_info = (
+            f"{self.technique_name} k ={self.coloring.solution[0]}, t={self.t:0.4f}s"
         )
-        ax_title = f"{self.technique_name}k={self.coloring.solution[0]}, t={self.t:0.4f}s\n{parameters_values}"
+        if self.parameters:
+            parameters_values = ", ".join(
+                [
+                    f"{alias}={getattr(self.coloring, parameter)}"
+                    for parameter, alias in self.parameters.items()
+                ]
+            )
+            ax_title = f"{solution_info}\n{parameters_values}"
+        else:
+            ax_title = f"{solution_info}"
         ax.set_title(ax_title, fontsize=13)
         v = self.coloring.g.v
         colors_map = {}

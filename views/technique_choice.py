@@ -1,6 +1,7 @@
 from tkinter import Toplevel, messagebox, ttk
 
 from opt_techniques.branch_and_bound import BranchAndBound
+from opt_techniques.coloring import Coloring
 
 from .bnb_parameters import BnBParameters
 from .config import BASE_PADDING, BOLD_FONT
@@ -38,8 +39,14 @@ class TechniqueChoice(ttk.Frame):
             width=self.button_width,
         )
         bnb_heuristics.pack(pady=BASE_PADDING, padx=BASE_PADDING)
+        self.welsh_powell_window = self.TechniqueWindow(
+            self, "Welsh and Powell", Coloring
+        )
         welsh_powell = ttk.Button(
-            self, text="Welsh and Powell", width=self.button_width
+            self,
+            text="Welsh and Powell",
+            width=self.button_width,
+            command=self.welsh_powell_window.open,
         )
         welsh_powell.pack(pady=BASE_PADDING, padx=BASE_PADDING)
         separator2 = ttk.Separator(self, orient="horizontal")
