@@ -7,9 +7,10 @@ from opt_techniques.heuristic import Heuristic
 
 from .bnb_heuristics_parameters import BnBHeuristicsParameters
 from .bnb_parameters import BnBParameters
-from .ga_parameters import GAParameters
 from .config import BASE_PADDING, BOLD_FONT
+from .ga_parameters import GAParameters
 from .generic_technique_view import GenericTechniqueView
+from .solution_frame import SolutionFrame
 
 
 class TechniqueChoice(ttk.Frame):
@@ -85,18 +86,34 @@ class TechniqueChoice(ttk.Frame):
         woa.pack(padx=BASE_PADDING, pady=BASE_PADDING)
 
     class TechniqueWindow:
-        def __init__(self, outer, name, coloring_class, parameters_class=None):
+        def __init__(
+            self,
+            outer,
+            name,
+            coloring_class,
+            parameters_class=None,
+            attrs_needed=["solution"],
+            solution_class=SolutionFrame,
+        ):
             self.outer = outer
             self.name = name
             self.coloring_class = coloring_class
             self.parameters_class = parameters_class
+            self.attrs_needed = attrs_needed
+            self.solution_class = solution_class
 
         def open(self):
             self.outer.open_generic_technique(
-                self.name, self.coloring_class, self.parameters_class
+                self.name,
+                self.coloring_class,
+                self.parameters_class,
+                self.attrs_needed,
+                self.solution_class,
             )
 
-    def open_generic_technique(self, name, coloring_class, parameters_class):
+    def open_generic_technique(
+        self, name, coloring_class, parameters_class, attrs_needed, solution_class
+    ):
         def on_closing():
             if messagebox.askokcancel("Confirmer", "Quitter ?", parent=window):
                 window.destroy()
@@ -105,6 +122,6 @@ class TechniqueChoice(ttk.Frame):
         window.protocol("WM_DELETE_WINDOW", on_closing)
         window.resizable(False, False)
         window.title(name)
-        GenericTechniqueView(window, name, coloring_class, parameters_class).pack(
-            padx=BASE_PADDING, pady=BASE_PADDING
-        )
+        GenericTechniqueView(
+            window, name, coloring_class, parameters_class, attrs_needed, solution_class
+        ).pack(padx=BASE_PADDING, pady=BASE_PADDING)

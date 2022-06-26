@@ -16,10 +16,20 @@ from .solution_frame import SolutionFrame
 
 
 class GenericTechniqueView(ttk.Frame):
-    def __init__(self, master, technique_name, coloring_class, parameters_class=None):
+    def __init__(
+        self,
+        master,
+        technique_name,
+        coloring_class,
+        parameters_class=None,
+        attrs_needed=["solution"],
+        solution_class=SolutionFrame,
+    ):
         super().__init__(master)
         self.technique_name = technique_name
         self.coloring_class = coloring_class
+        self.attrs_needed = attrs_needed
+        self.solution_class = solution_class
         adj_matrix_frame = ttk.Frame(self)
         adj_matrix_frame.pack(side=LEFT, padx=BASE_PADDING, pady=BASE_PADDING)
         adj_matrix_label = ttk.Label(
@@ -177,10 +187,9 @@ class GenericTechniqueView(ttk.Frame):
                 process_results["time"] = r[1]
 
             process_results = multiprocessing.Manager().dict()
-            attrs_needed = ["solution"]
             solve_process = multiprocessing.Process(
                 target=solve_process_job,
-                args=(coloring, attrs_needed, process_results),
+                args=(coloring, self.attrs_needed, process_results),
                 daemon=True,
             )
             killed = False
@@ -220,14 +229,14 @@ class GenericTechniqueView(ttk.Frame):
                 f"{instance.name or 'Custom'} avec {self.technique_name}"
             )
             if self.parameters is None:
-                solution_frame = SolutionFrame(
+                solution_frame = self.solution_class(
                     solution_window,
                     self.technique_name,
                     coloring,
                     t,
                 )
             else:
-                solution_frame = SolutionFrame(
+                solution_frame = self.solution_class(
                     solution_window,
                     self.technique_name,
                     coloring,
