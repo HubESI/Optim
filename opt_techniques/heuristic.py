@@ -71,12 +71,16 @@ class Heuristic(Coloring):
             for color in possible_colors:
                 active_nodes.put(self.Node.child_node(node, color))
 
-    @staticmethod
-    def min_nb_colors_cost(node: "Heuristic.Node", color: int) -> float:
-        used_colors = set(node.state)
-        used_colors.remove(None)
-        used_colors.add(color)
-        return len(used_colors) / node.vertex
+
+def min_color_cost(node: "Heuristic.Node", color: int) -> float:
+    return color / node.vertex
+
+
+def min_nb_colors_cost(node: "Heuristic.Node", color: int) -> float:
+    used_colors = set(node.state)
+    used_colors.remove(None)
+    used_colors.add(color)
+    return len(used_colors) / node.vertex
 
 
 if __name__ == "__main__":
