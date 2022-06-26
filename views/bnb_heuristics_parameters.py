@@ -1,6 +1,6 @@
 from tkinter import BooleanVar, ttk
 
-from opt_techniques.heuristic import min_color_cost, min_nb_colors_cost
+from opt_techniques.heuristic import Heuristic
 from .config import BASE_PADDING
 
 
@@ -31,9 +31,7 @@ class BnBHeuristicsParameters(ttk.Frame):
         self.min_nb_colors_choice.pack(padx=BASE_PADDING, pady=BASE_PADDING)
 
     def get_kwargs(self):
-        cost_function = (
-            min_nb_colors_cost if self.cost_function_choice.get() else min_color_cost
-        )
+        cost_function = Heuristic.min_nb_colors_cost
         return {"node_cost_calculator": cost_function}
 
     def parameters_names_aliases(self):
